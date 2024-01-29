@@ -8,3 +8,5 @@ Authors : <br/>
 Marc-Yves Malchev 40265238 <br/>
 Rachit Bhatia 40223767 <br/>
 Anass Taoussi 40229052 <br/>
+Mostafa Mohamed 40201893 <br/>
+Omar Elmasaoudi 40255123
