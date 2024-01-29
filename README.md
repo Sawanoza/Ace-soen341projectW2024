@@ -7,3 +7,4 @@ Rodrigo Morales Alvarado
 Authors : <br/>
 Marc-Yves Malchev 40265238 <br/>
 Rachit Bhatia 40223767 <br/>
+Anass Taoussi 40229052 <br/>
