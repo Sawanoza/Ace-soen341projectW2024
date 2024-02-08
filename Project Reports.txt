@@ -1,0 +1,23 @@
+Project Reports:
+
+Sprint 1:
+- Marc-Yves Malchev 40265238
+    - Creation of the README.md, Metting Minutes.txt, Project Reports.txt and User Stories.txt files
+
+- Rachit Bhatia 40223767
+    - 
+
+- Anass Taoussi 40229052
+    - 
+
+- Mostafa Mohamed 40201893
+    - 
+
+
+Sprint 2:
+
+
+Sprint 3:
+
+
+Sprint 4:
