@@ -1,10 +1,10 @@
 # SOEN341-Project
 Project for the SOEN341 course at Concordia University Canada for the Winter 2024 semester
 
-Professor: <br/>
+Professor/Instructor: <br/>
 Rodrigo Morales Alvarado
 
-Instructor: <br/>
+Teaching Assistant: <br/>
 Navjyot Singh
 
 Authors : <br/>
