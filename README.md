@@ -12,10 +12,14 @@ Rodrigo Morales Alvarado
 Navjyot Singh
 
 ### Authors:
-Marc-Yves Malchev 40265238  
+Marc-Yves Malchev 40265238     
 Rachit Bhatia 40223767  
-Anass Taoussi 40229052  
-Mostafa Mohamed 40201893  
+Anass Taoussi 40229052   
+Mostafa Mohamed 40201893 
+
+### Roles
+We're a team of 4, which is below the minimum required number of collaborators. As such, everyone will have to work on front-end and back-end development.  
+
 
 ## Installation Instructions:
 
