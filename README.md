@@ -11,10 +11,10 @@ Rodrigo Morales Alvarado
 Navjyot Singh
 
 ## Authors:
-Marc-Yves Malchev 40265238
-Rachit Bhatia 40223767 
-Anass Taoussi 40229052 
-Mostafa Mohamed 40201893 
+Marc-Yves Malchev 40265238  
+Rachit Bhatia 40223767  
+Anass Taoussi 40229052  
+Mostafa Mohamed 40201893  
 
 ## Installation Instructions:
 
