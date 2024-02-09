@@ -4,6 +4,9 @@ Project for the SOEN341 course at Concordia University Canada for the Winter 202
 Professor: <br/>
 Rodrigo Morales Alvarado
 
+Instructor: <br/>
+Navjyot Singh
+
 Authors : <br/>
 Marc-Yves Malchev 40265238 <br/>
 Rachit Bhatia 40223767 <br/>
