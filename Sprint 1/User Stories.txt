@@ -1,0 +1,15 @@
+User Stories:
+
+Sprint 1:
+- Start a reservation
+- View/Modify/Cancel a reservation
+- Browse vehicles for rent
+- CRUD operations on users
+- CRUD operations on vehicles
+- CRUD operations on reservations
+
+Sprint 2:
+
+Sprint 3:
+
+Sprint 4:
