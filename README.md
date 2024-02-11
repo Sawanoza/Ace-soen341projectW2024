@@ -17,9 +17,6 @@ Rachit Bhatia 40223767
 Anass Taoussi 40229052   
 Mostafa Mohamed 40201893 
 
-### Roles
-Since we're a team of 4, which is below the minimum required number of collaborators, everyone will have to work on front-end and back-end development (full-stack). Communication and adaptability will be even more important in this case.
-
 
 ## Installation Instructions:
 
