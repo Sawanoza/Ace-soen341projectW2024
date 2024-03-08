@@ -37,5 +37,38 @@
 
         <input type="submit" value="Update Vehicle">
     </form>
+    <script>
+document.getElementById('updateButton').addEventListener('click', function(e) {
+    // Prevent the form from submitting the traditional way
+    e.preventDefault();
+
+    // Assuming your form has an ID "updateVehicleForm"
+    var form = document.getElementById('updateVehicleForm');
+    var formData = new FormData(form);
+
+    fetch('/update_vehicle', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if(response.ok) {
+            // If the server responds that the request was successful
+            return response.json(); // Assuming the server responds with JSON
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(data => {
+        // Assuming the server response includes a success message
+        console.log(data.message); // Log or process server response
+        document.getElementById('successMessage').textContent = 'Your update was successful!';
+        // Optionally, clear the form or take other actions
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        document.getElementById('successMessage').textContent = 'There was a problem with the update.';
+    });
+});
+</script>
+
 </body>
 </html>
