@@ -1,53 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Vehicle</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vehicle List</title>
     <style>
-        /* Styles */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Add New Vehicle</h1>
-        <form id="addVehicleForm">
-            <!-- Form fields -->
-        </form>
-    </div>
-
+  </head>
+  <body>
+    <h2>Vehicle List</h2>
+    <table id="vehicleTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Name</th>
+          <th>Mileage</th>
+          <th>Seats</th>
+          <th>Type</th>
+          <th>Availability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Vehicle data will be inserted here -->
+      </tbody>
+    </table>
+    <br />
+    <button id="createVehicleButton">Add Vehicle</button>
     <script>
-        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = {
-                VehicleID: document.getElementById('vehicleID').value,
-                Brand: document.getElementById('brand').value,
-                Price: document.getElementById('price').value,
-                Name: document.getElementById('name').value,
-                Mileage: document.getElementById('mileage').value,
-                Seats: document.getElementById('seats').value,
-                Type: document.getElementById('type').value,
-                IsAvailable: document.getElementById('isAvailable').value === 'true'
-            };
-
-            fetch('http://localhost:8800/vehicles', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Vehicle added successfully!');
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Error adding vehicle.');
+      window.onload = function () {
+        fetch("/vehicles")
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.querySelector("#vehicleTable tbody");
+            data.forEach((vehicle) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+            <td>${vehicle.VehicleID}</td>
+            <td>${vehicle.Brand}</td>
+            <td>${vehicle.Price}</td>
+            <td>${vehicle.Name}</td>
+            <td>${vehicle.Mileage}</td>
+            <td>${vehicle.Seats}</td>
+            <td>${vehicle.Type}</td>
+            <td>${vehicle.IsAvailable ? "Available" : "Not Available"}</td>
+          `;
+              tableBody.appendChild(row);
             });
+          })
+          .catch((error) =>
+            console.error("Error fetching vehicle data:", error)
+          );
+
+        const createVehicleButton = document.getElementById(
+          "createVehicleButton"
+        );
+        createVehicleButton.addEventListener("click", function () {
+          window.location.href = "/create_vehicles";
         });
+      };
     </script>
-</body>
+  </body>
 </html>

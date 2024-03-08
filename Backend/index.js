@@ -10,9 +10,12 @@ app.use(express.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root"
+  password: "root",
 });
-app.use(express.static(path.join(__dirname, 'HTML')));
+
+app.use(express.static(path.join(__dirname, "HTML")));
+app.use(express.urlencoded({ extended: true }));
+
 function createTables() {
   const create_tables = [
     "CREATE DATABASE IF NOT EXISTS Car_Rental;",
@@ -65,15 +68,6 @@ app.get("/", (req, res) => {
   res.json("Connected.");
 });
 
-app.get("/read_vehicles", (req, res) => {
-  res.sendFile(path.join(__dirname, 'HTML/read_vehicles.html'));
-});
-
-app.get("/create_vehicles", (req, res) => {
-  res.sendFile(path.join(__dirname, 'HTML/create_vehicles.html'));
-});
-
-
 app.get("/vehicles", (req, res) => {
   const q = "SELECT * FROM Vehicles";
   db.query(q, (err, data) => {
@@ -85,8 +79,28 @@ app.get("/vehicles", (req, res) => {
   });
 });
 
-app.post("/vehicles", (req, res) => {
-  const q = "INSERT INTO Vehicles (VehicleID, Brand, Price, Name, Mileage, Images, Seats, Type, IsAvailable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+app.get("/create_vehicles", (req, res) => {
+  res.sendFile(path.join(__dirname, "HTML/create_vehicles.html"));
+});
+
+app.get("/read_vehicles", (req, res) => {
+  res.sendFile(path.join(__dirname, "HTML/read_vehicles.html"));
+});
+
+app.post("/item", function (req, res) {
+  console.log([
+    req.body.vehicleId,
+    req.body.brand,
+    req.body.price,
+    req.body.name,
+    req.body.mileage,
+    req.body.seats,
+    req.body.type,
+    req.body.isAvailable,
+  ]);
+
+  const q =
+    "INSERT INTO Vehicles (VehicleID, Brand, Price, Name, Mileage, Images, Seats, Type, IsAvailable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   const values = [
     req.body.vehicleId,
@@ -97,7 +111,7 @@ app.post("/vehicles", (req, res) => {
     req.body.images,
     req.body.seats,
     req.body.type,
-    req.body.isAvailable
+    req.body.isAvailable,
   ];
 
   db.query(q, values, (err, data) => {
@@ -105,35 +119,7 @@ app.post("/vehicles", (req, res) => {
       console.error(err);
       return res.send(err);
     }
-    return res.json(data);
-  });
-});
-
-
-app.delete("/vehicles/:id", (req, res) => {
-  const bookId = req.params.id;
-  const q = " DELETE FROM books WHERE id = ? ";
-
-  db.query(q, [bookId], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
-  });
-});
-
-app.put("/vehicles/:id", (req, res) => {
-  const bookId = req.params.id;
-  const q = "UPDATE books SET `title`= ?, `desc`= ?, `price`= ?, `cover`= ? WHERE id = ?";
-//!!!!!!!!!
-  const values = [
-    req.body.title,
-    req.body.desc,
-    req.body.price,
-    req.body.cover,
-  ];
-
-  db.query(q, [...values,bookId], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
+    res.redirect("/read_vehicles");
   });
 });
 
