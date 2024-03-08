@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Vehicle</title>
+    <style>
+        /* Styles */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Vehicle</h1>
+        <form id="addVehicleForm">
+            <!-- Form fields -->
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                VehicleID: document.getElementById('vehicleID').value,
+                Brand: document.getElementById('brand').value,
+                Price: document.getElementById('price').value,
+                Name: document.getElementById('name').value,
+                Mileage: document.getElementById('mileage').value,
+                Seats: document.getElementById('seats').value,
+                Type: document.getElementById('type').value,
+                IsAvailable: document.getElementById('isAvailable').value === 'true'
+            };
+
+            fetch('http://localhost:8800/vehicles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Vehicle added successfully!');
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Error adding vehicle.');
+            });
+        });
+    </script>
+</body>
+</html>
