@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Vehicle</title>
+</head>
+<body>
+    <h2>Update Vehicle Information</h2>
+    <form action="/update_vehicle" method="post">
+        <label for="vehicleId">Vehicle ID:</label><br>
+        <input type="text" id="vehicleId" name="vehicleId" required><br>
+
+        <label for="brand">Brand:</label><br>
+        <input type="text" id="brand" name="brand" required><br>
+
+        <label for="price">Price:</label><br>
+        <input type="number" id="price" name="price" required><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="mileage">Mileage:</label><br>
+        <input type="number" id="mileage" name="mileage" required><br>
+
+        <label for="seats">Seats:</label><br>
+        <input type="number" id="seats" name="seats" required><br>
+
+        <label for="type">Type:</label><br>
+        <input type="text" id="type" name="type" required><br>
+
+        <label for="isAvailable">Is Available:</label><br>
+        <select id="isAvailable" name="isAvailable" required>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select><br><br>
+
+        <input type="submit" value="Update Vehicle">
+    </form>
+    <script>
+        document.getElementById('updateButton').addEventListener('click', function(e) {
+            // Prevent the form from submitting the traditional way
+            e.preventDefault();
+        
+            // Assuming your form has an ID "updateVehicleForm"
+            var form = document.getElementById('updateVehicleForm');
+            var formData = new FormData(form);
+        
+            fetch('/update_vehicle', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if(response.ok) {
+                    // If the server responds that the request was successful
+                    return response.json(); // Assuming the server responds with JSON
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                // Assuming the server response includes a success message
+                console.log(data.message); // Log or process server response
+                document.getElementById('successMessage').textContent = 'Your update was successful!';
+                // Optionally, clear the form or take other actions
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+                document.getElementById('successMessage').textContent = 'There was a problem with the update.';
+            });
+        });
+        </script>
+        
+</body>
+</html>
