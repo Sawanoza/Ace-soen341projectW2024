@@ -37,6 +37,18 @@ function createTables() {
   });
 }
 
+app.get("/users", (req, res) => {
+  const q = "SELECT * FROM Users";
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.json(err);
+    }
+
+    return res.json(data);
+  });
+});
+
 // Function to insert initial data
 function insertData() {
   const insert_values = [
@@ -83,9 +95,55 @@ app.get("/create_vehicles", (req, res) => {
   res.sendFile(path.join(__dirname, "HTML/create_vehicles.html"));
 });
 
+app.get("/create_users", (req, res) => {
+  res.sendFile(path.join(__dirname, "HTML/create_users.html"));
+});
+
 app.get("/read_vehicles", (req, res) => {
   res.sendFile(path.join(__dirname, "HTML/read_vehicles.html"));
 });
+
+app.get("/read_users", (req, res) => {
+  res.sendFile(path.join(__dirname, "HTML/read_users.html"));
+});
+
+app.post("/create_user", function (req, res) {
+  console.log([
+    req.body.userId,
+    req.body.firstName,
+    req.body.lastName,
+    req.body.contactNo,
+    req.body.email,
+    req.body.address,
+    req.body.isCust,
+    req.body.isAdmin,
+    req.body.isRep,
+  ]);
+
+  const q =
+    "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  const values = [
+    req.body.userId,
+    req.body.firstName,
+    req.body.lastName,
+    req.body.contactNo,
+    req.body.email,
+    req.body.address,
+    req.body.isCust,
+    req.body.isAdmin,
+    req.body.isRep,
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+    res.redirect("/read_users");
+  });
+});
+
 
 app.post("/item", function (req, res) {
   console.log([
