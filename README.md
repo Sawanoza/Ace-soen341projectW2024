@@ -18,11 +18,5 @@ Anass Taoussi 40229052
 Mostafa Mohamed 40201893 
 
 
-## Installation Instructions:
-
-
-## Usage Guidelines:
-
-
 ## Additional Documentation:
 See [Wiki](https://github.com/Sawanoza/Ace-soen341projectW2024/wiki)
