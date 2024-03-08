@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Vehicle</title>
+</head>
+<body>
+    <h2>Update Vehicle Information</h2>
+    <form action="/update_vehicle" method="post">
+        <label for="vehicleId">Vehicle ID:</label><br>
+        <input type="text" id="vehicleId" name="vehicleId" required><br>
+
+        <label for="brand">Brand:</label><br>
+        <input type="text" id="brand" name="brand" required><br>
+
+        <label for="price">Price:</label><br>
+        <input type="number" id="price" name="price" required><br>
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="mileage">Mileage:</label><br>
+        <input type="number" id="mileage" name="mileage" required><br>
+
+        <label for="seats">Seats:</label><br>
+        <input type="number" id="seats" name="seats" required><br>
+
+        <label for="type">Type:</label><br>
+        <input type="text" id="type" name="type" required><br>
+
+        <label for="isAvailable">Is Available:</label><br>
+        <select id="isAvailable" name="isAvailable" required>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select><br><br>
+
+        <input type="submit" value="Update Vehicle">
+    </form>
+</body>
+</html>
