@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservation List</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h2>Reservation List</h2>
+  <table id="reservationTable">
+    <thead>
+      <tr>
+        <th>Vehicle ID</th>
+        <th>User ID</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Reservation data will be inserted here -->
+    </tbody>
+  </table>
+  <br>
+  <button id="createReservationButton">Add Reservation</button>
+  <script>
+    window.onload = function () {
+      fetch("/reservations")
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.querySelector("#reservationTable tbody");
+          data.forEach(reservation => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${reservation.VehicleID}</td>
+              <td>${reservation.UserID}</td>
+              <td>${reservation.StartTime}</td>
+              <td>${reservation.EndTime}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => console.error("Error fetching reservation data:", error));
+
+      const createReservationButton = document.getElementById("createReservationButton");
+      createReservationButton.addEventListener("click", function () {
+        window.location.href = "/create_reservations";
+      });
+    };
+  </script>
+</body>
+</html>
