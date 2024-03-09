@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Create Reservation</title>
+  </head>
+  <body>
+    <header>
+      <h1>Create Reservation</h1>
+    </header>
+    <form action="/create_reservation" method="POST">
+      <fieldset>
+        <label for="vehicleId">Vehicle ID:</label><br />
+        <input type="text" id="vehicleId" name="vehicleId" required /><br />
+
+        <label for="userId">User ID:</label><br />
+        <input type="text" id="userId" name="userId" required /><br />
+
+        <label for="startTime">Start Time:</label><br />
+        <input type="datetime-local" id="startTime" name="startTime" required /><br />
+
+        <label for="endTime">End Time:</label><br />
+        <input type="datetime-local" id="endTime" name="endTime" required /><br />
+
+        <br /><br />
+        <button type="reset">Reset</button>
+        <button type="submit">Submit</button>
+        <button type="button" onclick="window.location.href='/read_reservations'">View Reservations</button>
+      </fieldset>
+    </form>
+  </body>
+</html>
