@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User List</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>User List</h2>
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Contact No</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Is Customer</th>
+          <th>Is Admin</th>
+          <th>Is Representative</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- User data will be inserted here -->
+      </tbody>
+    </table>
+    <br />
+    <button id="createUserButton">Add User</button>
+    <script>
+      window.onload = function () {
+        fetch("/users")
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.querySelector("#userTable tbody");
+            data.forEach((user) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${user.UserID}</td>
+                <td>${user.FirstName}</td>
+                <td>${user.LastName}</td>
+                <td>${user.ContactNo}</td>
+                <td>${user.Email}</td>
+                <td>${user.Address}</td>
+                <td>${user.IsCust ? "Yes" : "No"}</td>
+                <td>${user.IsAdmin ? "Yes" : "No"}</td>
+                <td>${user.IsRep ? "Yes" : "No"}</td>
+              `;
+              tableBody.appendChild(row);
+            });
+          })
+          .catch((error) => console.error("Error fetching user data:", error));
+
+        const createUserButton = document.getElementById(
+          "createUserButton"
+        );
+        createUserButton.addEventListener("click", function () {
+          window.location.href = "/create_users";
+        });
+      };
+    </script>
+  </body>
+</html>
