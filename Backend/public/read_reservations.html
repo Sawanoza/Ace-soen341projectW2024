@@ -38,6 +38,23 @@
   <br>
   <button id="createReservationButton">Add Reservation</button>
   <script>
+    function cancelReservation(userID, vehicleID, row) {
+        if (confirm("Are you sure you want to cancel this reservation?")) {
+            fetch(`http://localhost:8800/HasReserved/${userID}/${vehicleID}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`The Reservation for user ID ${userID} and vehicle ID ${vehicleID} was cancelled successfully`);
+                    row.remove();
+                } else {
+                    console.error('Error cancelling reservation:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error cancelling reservation:', error));
+        }
+    }
+
     window.onload = function () {
       fetch("/reservations")
         .then(response => response.json())
@@ -50,6 +67,7 @@
               <td>${reservation.UserID}</td>
               <td>${reservation.StartTime}</td>
               <td>${reservation.EndTime}</td>
+              <td><button onclick="cancelReservation('${reservation.UserID}','${reservation.VehicleID}', this.parentNode.parentNode)">Delete</button></td>
             `;
             tableBody.appendChild(row);
           });
@@ -64,3 +82,4 @@
   </script>
 </body>
 </html>
+
