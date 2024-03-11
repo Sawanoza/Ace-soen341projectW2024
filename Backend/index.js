@@ -294,6 +294,17 @@ app.delete("/Users/:UserID", (req, res) => {
 
 //Delete reservations (I put the function inside the route handler)
 
+function cancelReservation(userID, vehicleID, callback) {
+  const query = 'DELETE FROM Car_Rental.HasReserved WHERE UserID = ? AND VehicleID = ?';
+  db.query(query, [userID, vehicleID], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
 app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
   const userIDToDelete = req.params.UserID;
   const vehicleIDToDelete = req.params.VehicleID;
@@ -315,4 +326,4 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
 // ___________  END OF DELETE ___________
 
 
-
+module.exports = app;
