@@ -6,6 +6,18 @@ const db = mysql.createConnection({
   password: "root",
 });
 
+function dropDatabase() {
+  const dropQuery = "DROP DATABASE IF EXISTS Car_Rental;";
+
+  db.query(dropQuery, function (error, result) {
+    if (error) {
+      console.log("Error dropping database:", error.sqlMessage);
+      return;
+    }
+    console.log("Database 'Car_Rental' dropped successfully.");
+  });
+}
+
 function createTables() {
   const create_tables = [
     "CREATE DATABASE IF NOT EXISTS Car_Rental;",
@@ -50,7 +62,7 @@ function insertData() {
 db.connect(function (err) {
   if (err) throw err;
   console.log("connected");
-  //dropDatabase()
+  dropDatabase();
   createTables();
   insertData();
 });
