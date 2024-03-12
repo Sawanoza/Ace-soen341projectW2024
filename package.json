@@ -1,0 +1,20 @@
+{
+  "name": "ace-soen341projectw2024",
+  "version": "1.0.0",
+  "description": "Project for the SOEN341 course at Concordia University Canada for the Winter 2024 semester",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "path": "^1.0.0",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
