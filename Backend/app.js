@@ -170,6 +170,113 @@ app.post("/item", function (req, res) {
   });
 });
 
+// ___________ ADDING DELETE  ___________
+
+//Delete vehicles
+
+function deleteVehiculeById(id, callback) {
+  const query = `DELETE FROM Car_Rental.Vehicles WHERE Vehicleid = ?`;
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+app.delete("/Vehicles/:VehicleID", (req, res) => {
+  const idToDelete = req.params.VehicleID; 
+  deleteVehiculeById(idToDelete, (error, results) => {
+    if (error) {
+      console.error('Error deleting vehicle by ID:', error);
+      res.status(500).send('Internal Server Error'); 
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Vehicle not found'); 
+    } else {
+      res.status(200).send('Vehicle deleted successfully'); 
+    }
+  });
+});
+
+//Delete users
+
+// Important note, when a user is deleted by ID from "Users", the associated records in "HasReserved" should be deleted
+
+function deleteUserByIdWithAssociatedRecords(id, callback) {
+  const deleteHasReservedQuery = `DELETE FROM Car_Rental.HasReserved WHERE UserID = ?`;
+  const deleteUserQuery = `DELETE FROM Car_Rental.Users WHERE UserID = ?`;
+
+  db.query(deleteHasReservedQuery, [id], (error, result) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    db.query(deleteUserQuery, [id], (error, result) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+      callback(null, result);
+    });
+  });
+}
+
+
+app.delete("/Users/:UserID", (req, res) => {
+  const idToDelete = req.params.UserID;
+  deleteUserByIdWithAssociatedRecords(idToDelete, (error, results) => {
+    if (error) {
+      console.error('Error deleting user by ID:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('User not found');
+    } else {
+      res.status(200).send('User deleted successfully');
+    }
+  });
+});
+
+
+
+//Delete reservations (I put the function inside the route handler)
+
+function cancelReservation(userID, vehicleID, callback) {
+  const query = 'DELETE FROM Car_Rental.HasReserved WHERE UserID = ? AND VehicleID = ?';
+  db.query(query, [userID, vehicleID], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
+  const userIDToDelete = req.params.UserID;
+  const vehicleIDToDelete = req.params.VehicleID;
+  
+  cancelReservation(userIDToDelete, vehicleIDToDelete, (error, results) => {
+      if (error) {
+          console.error('Error cancelling reservation:', error);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+      if (results.affectedRows === 0) {
+          res.status(404).send('Reservation not found');
+      } else {
+          res.status(200).send('Reservation cancelled successfully');
+      }
+  });
+});
+
+// ___________  END OF DELETE ___________
+
+
 app.listen(8800, () => {
   console.log("Connected to backend.");
 });
