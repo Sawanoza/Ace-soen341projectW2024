@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set executable permission
+        run: chmod +x <pipeline.yml>
+      
       - name: Checkout code
         uses: actions/checkout@v2
 
