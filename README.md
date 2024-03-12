@@ -20,3 +20,10 @@ Mostafa Mohamed 40201893
 
 ## Additional Documentation:
 See [Wiki](https://github.com/Sawanoza/Ace-soen341projectW2024/wiki)
+You can find:
+- Git Rules
+- Individual Log and Contribution
+- Installation Instructions & Usage Guidelines
+- Meeting Minutes
+- Project Approach and Technology
+- Sprint Planning
