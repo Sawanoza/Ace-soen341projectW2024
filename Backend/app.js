@@ -203,32 +203,45 @@ app.delete("/Vehicles/:VehicleID", (req, res) => {
 
 //Delete users
 
-function deleteUserById(id, callback) {
-  const query = `DELETE FROM Car_Rental.Users WHERE Userid = ?`;
-  db.query(query, [id], (error, results) => {
+// Important note, when a user is deleted by ID from "Users", the associated records in "HasReserved" should be deleted
+
+function deleteUserByIdWithAssociatedRecords(id, callback) {
+  const deleteHasReservedQuery = `DELETE FROM Car_Rental.HasReserved WHERE UserID = ?`;
+  const deleteUserQuery = `DELETE FROM Car_Rental.Users WHERE UserID = ?`;
+
+  db.query(deleteHasReservedQuery, [id], (error, result) => {
     if (error) {
       callback(error, null);
       return;
     }
-    callback(null, results);
+    db.query(deleteUserQuery, [id], (error, result) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+      callback(null, result);
+    });
   });
 }
 
+
 app.delete("/Users/:UserID", (req, res) => {
-  const idToDelete = req.params.UserID; 
-  deleteUserById(idToDelete, (error, results) => {
+  const idToDelete = req.params.UserID;
+  deleteUserByIdWithAssociatedRecords(idToDelete, (error, results) => {
     if (error) {
       console.error('Error deleting user by ID:', error);
-      res.status(500).send('Internal Server Error'); 
+      res.status(500).send('Internal Server Error');
       return;
     }
     if (results.affectedRows === 0) {
-      res.status(404).send('User not found'); 
+      res.status(404).send('User not found');
     } else {
-      res.status(200).send('User deleted successfully'); 
+      res.status(200).send('User deleted successfully');
     }
   });
 });
+
+
 
 //Delete reservations (I put the function inside the route handler)
 
