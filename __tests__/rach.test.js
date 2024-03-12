@@ -67,4 +67,32 @@ describe("POST /users", () => {
   });
 });
 
+describe("GET /reservations", () => {
+  it("responds with JSON containing all reservations", async () => {
+    const response = await request(app).get("/reservations");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBeDefined();
+  });
+});
 
+describe("POST /reservations", () => {
+  it("responds with JSON containing the newly created reservation", async () => {
+    // Define the reservation data to send in the request
+    const reservationData = {
+      vehicleId: "2",
+      userId: "8",
+      startTime: "2024-03-10 09:00:00",
+      endTime: "2024-03-14 15:45:00",
+    };
+
+    // Send a POST request to create a new reservation
+    const response = await request(app)
+      .post("/create_reservation")
+      .send(reservationData);
+
+    expect(response.statusCode === 200 || response.statusCode === 302).toBe(
+      true
+    );
+
+  });
+});
