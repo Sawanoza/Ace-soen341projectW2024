@@ -203,6 +203,8 @@ app.delete("/Vehicles/:VehicleID", (req, res) => {
 
 //Delete users
 
+// Function to delete a user by ID from the database
+
 // Important note, when a user is deleted by ID from "Users", the associated records in "HasReserved" should be deleted
 
 function deleteUserByIdWithAssociatedRecords(id, callback) {
@@ -240,7 +242,6 @@ app.delete("/Users/:UserID", (req, res) => {
     }
   });
 });
-
 
 
 //Delete reservations (I put the function inside the route handler)
@@ -282,3 +283,69 @@ app.listen(8800, () => {
 });
 
 module.exports = app;
+
+//____________ UPDATE ______________
+
+// Function to update a vehicle by ID in the database
+function updateVehicleById(id, newData, callback) {
+  const query = `UPDATE Car_Rental.Vehicles SET ? WHERE VehicleID = ?`;
+  db.query(query, [newData, id], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+// Route to handle PUT requests for updating a vehicle by ID
+app.put("/Vehicles/:VehicleID", (req, res) => {
+  const idToUpdate = req.params.VehicleID;
+  const newData = req.body; 
+  updateVehicleById(idToUpdate, newData, (error, results) => {
+    if (error) {
+      console.error('Error updating vehicle by ID:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Vehicle not found');
+    } else {
+      res.status(200).send('Vehicle updated successfully');
+    }
+  });
+});
+
+//FOR USERS (update)
+
+// Function to update a user by ID in the database
+function updateUserById(id, newData, callback) {
+  const query = `UPDATE Car_Rental.Users SET ? WHERE UserID = ?`;
+  db.query(query, [newData, id], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+
+app.put("/Users/:UserID", (req, res) => {
+  const idToUpdate = req.params.UserID;
+  const newData = req.body; 
+  updateUserById(idToUpdate, newData, (error, results) => {
+    if (error) {
+      console.error('Error updating user by ID:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('User not found');
+    } else {
+      res.status(200).send('User updated successfully');
+    }
+  });
+});
+
+//_______ END OF UPDATE _________
