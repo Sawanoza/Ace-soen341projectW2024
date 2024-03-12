@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set executable permission
-        run: chmod +x <pipeline.yml>
-      
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set executable permission
+        run: chmod +x Backend/app.js
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
