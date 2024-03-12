@@ -170,6 +170,100 @@ app.post("/item", function (req, res) {
   });
 });
 
+// ___________ ADDING DELETE  ___________
+
+//Delete vehicles
+
+function deleteVehiculeById(id, callback) {
+  const query = `DELETE FROM Car_Rental.Vehicles WHERE Vehicleid = ?`;
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+app.delete("/Vehicles/:VehicleID", (req, res) => {
+  const idToDelete = req.params.VehicleID; 
+  deleteVehiculeById(idToDelete, (error, results) => {
+    if (error) {
+      console.error('Error deleting vehicle by ID:', error);
+      res.status(500).send('Internal Server Error'); 
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Vehicle not found'); 
+    } else {
+      res.status(200).send('Vehicle deleted successfully'); 
+    }
+  });
+});
+
+//Delete users
+
+function deleteUserById(id, callback) {
+  const query = `DELETE FROM Car_Rental.Users WHERE Userid = ?`;
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+app.delete("/Users/:UserID", (req, res) => {
+  const idToDelete = req.params.UserID; 
+  deleteUserById(idToDelete, (error, results) => {
+    if (error) {
+      console.error('Error deleting user by ID:', error);
+      res.status(500).send('Internal Server Error'); 
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('User not found'); 
+    } else {
+      res.status(200).send('User deleted successfully'); 
+    }
+  });
+});
+
+//Delete reservations (I put the function inside the route handler)
+
+function cancelReservation(userID, vehicleID, callback) {
+  const query = 'DELETE FROM Car_Rental.HasReserved WHERE UserID = ? AND VehicleID = ?';
+  db.query(query, [userID, vehicleID], (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    callback(null, results);
+  });
+}
+
+app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
+  const userIDToDelete = req.params.UserID;
+  const vehicleIDToDelete = req.params.VehicleID;
+  
+  cancelReservation(userIDToDelete, vehicleIDToDelete, (error, results) => {
+      if (error) {
+          console.error('Error cancelling reservation:', error);
+          res.status(500).send('Internal Server Error');
+          return;
+      }
+      if (results.affectedRows === 0) {
+          res.status(404).send('Reservation not found');
+      } else {
+          res.status(200).send('Reservation cancelled successfully');
+      }
+  });
+});
+
+// ___________  END OF DELETE ___________
+
+
 app.listen(8800, () => {
   console.log("Connected to backend.");
 });
