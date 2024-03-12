@@ -27,3 +27,6 @@ You can find:
 - Meeting Minutes
 - Project Approach and Technology
 - Sprint Planning
+
+## Sprint 2 - Features Video
+- https://drive.google.com/file/d/1xdWBitVMckbpKWeISQlGw0kzZOw9-W5m/view?usp=drive_link
