@@ -4,7 +4,7 @@
   "description": "Project for the SOEN341 course at Concordia University Canada for the Winter 2024 semester",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "npm jest"
   },
   "keywords": [],
   "author": "",
