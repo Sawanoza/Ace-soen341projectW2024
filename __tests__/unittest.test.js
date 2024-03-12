@@ -17,6 +17,14 @@ describe("GET /vehicles", () => {
   });
 });
 
+describe("GET /reservations", () => {
+  it("responds with JSON containing all reservations", async () => {
+    const response = await request(app).get("/reservations");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBeDefined();
+  });
+});
+
 describe("POST /vehicles", () => {
   const randomNumber = Math.floor(Math.random() * 90000) + 10000;
   it("responds with 200 redirect on successful vehicle creation", async () => {
@@ -38,12 +46,12 @@ describe("POST /vehicles", () => {
     );
   });
 });
-//"INSERT INTO Users (UserID, ProfileImg, FirstName, LastName, ContactNo, Email, Password, Address, IsCust, IsAdmin, IsRep) VALUES (1, NULL, 'John', 'Doe', 1234567890, 'john@example.com', 'password123', '123 Main St', true, NULL, NULL)
+
 describe("POST /users", () => {
   it("responds with JSON containing the newly created user", async () => {
     const randomNumber = Math.floor(Math.random() * 90000) + 10000;
 
-    //Define the user data to send in the request
+
     const userData = {
       userId: randomNumber.toString(),
       profileImg: null,
@@ -58,7 +66,7 @@ describe("POST /users", () => {
       isRep: null,
     };
 
-    //Sends a POST request to create a new user
+    
     const response = await request(app).post("/create_user").send(userData);
 
     expect(response.statusCode === 200 || response.statusCode === 302).toBe(
@@ -67,17 +75,9 @@ describe("POST /users", () => {
   });
 });
 
-describe("GET /reservations", () => {
-  it("responds with JSON containing all reservations", async () => {
-    const response = await request(app).get("/reservations");
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toBeDefined();
-  });
-});
-
 describe("POST /reservations", () => {
   it("responds with JSON containing the newly created reservation", async () => {
-    // Define the reservation data to send in the request
+   
     const reservationData = {
       vehicleId: "2",
       userId: "8",
@@ -93,33 +93,113 @@ describe("POST /reservations", () => {
     expect(response.statusCode === 200 || response.statusCode === 302).toBe(
       true
     );
-
   });
 });
 
+describe("DELETE /Users/:UserID", () => {
+  it("Successful user deletion", async () => {
+   
+    const newUser = {
+      userId: 100, 
+      firstName: "Test",
+      lastName: "User",
+      contactNo: 1234567890,
+      email: "test@example.com",
+      address: "123 Test St",
+      isCust: true,
+      isAdmin: false,
+      isRep: false,
+    };
 
+    await request(app).post("/create_user").send(newUser);
 
-describe('DELETE /Users/:UserID', () => {
-  it('Successful user deletion', async () => {
-    const res = await request(app).delete('/Users/'); //Change the ID with an existing user.
-    expect(res.status).toBe(200); 
-    expect(res.text).toBe('User deleted successfully');
+    
+    const res = await request(app).delete(`/Users/${newUser.userId}`);
+
+   
+    expect(res.status).toBe(200);
+    expect(res.text).toBe("User deleted successfully");
   });
 });
 
-describe('DELETE /Vehicles/:VehicleID', () => {
-  it('Successful vehicle deletion', async () => {
-    const res = await request(app).delete('/Vehicles/10'); //Change the ID with an existing vehicle.
-    expect(res.status).toBe(200); 
-    expect(res.text).toBe('Vehicle deleted successfully');
+describe("DELETE /Vehicles/:VehicleID", () => {
+  it("Successful vehicle deletion", async () => {
+   
+    const newVehicle = {
+      vehicleId: 1000, 
+      brand: "TestBrand",
+      price: 50,
+      name: "TestVehicle",
+      mileage: 20,
+      seats: 4,
+      type: "sedan",
+      isAvailable: true,
+    };
+
+    await request(app)
+      .post("/item")
+      .send(newVehicle);
+
+   
+    const res = await request(app).delete(`/Vehicles/${newVehicle.vehicleId}`);
+    
+   
+    expect(res.status).toBe(200);
+    expect(res.text).toBe("Vehicle deleted successfully");
   });
 });
 
-describe('DELETE /HasReserved/:UserID/:VehicleID', () => {
-  it('should cancel reservation if found', async () => {
-    const res = await request(app)
-      .delete('/HasReserved/3/13'); //Change the IDs with existing ones.
-    expect(res.status).toBe(200); 
-    expect(res.text).toBe('Reservation cancelled successfully');
+describe("DELETE /HasReserved/:UserID/:VehicleID", () => {
+  it("should cancel reservation if found", async () => {
+    
+    const newUser = {
+      userId: 100, 
+      firstName: "Test",
+      lastName: "User",
+      contactNo: 1234567890,
+      email: "test@example.com",
+      address: "123 Test St",
+      isCust: true,
+      isAdmin: false,
+      isRep: false,
+    };
+
+    await request(app).post("/create_user").send(newUser);
+
+    
+    const newVehicle = {
+      vehicleId: 1000, 
+      brand: "TestBrand",
+      price: 50,
+      name: "TestVehicle",
+      mileage: 20,
+      seats: 4,
+      type: "sedan",
+      isAvailable: true,
+    };
+
+    await request(app).post("/item").send(newVehicle);
+
+    
+    const newReservation = {
+      userId: newUser.userId, 
+      vehicleId: newVehicle.vehicleId,
+      startTime: "2024-03-25 09:00:00",
+      endTime: "2024-03-27 17:00:00",
+    };
+
+    await request(app)
+      .post("/create_reservation")
+      .send(newReservation);
+
+   
+    const res = await request(app).delete(
+      `/HasReserved/${newReservation.userId}/${newReservation.vehicleId}`
+    );
+
+    
+    expect(res.status).toBe(200);
+    expect(res.text).toBe("Reservation cancelled successfully");
   });
 });
+
