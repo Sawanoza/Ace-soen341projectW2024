@@ -28,7 +28,7 @@ jobs:
         run: npm install
 
       - name: Run Server
-        run: node app.js
+        run: Backend/node app.js
 
       - name: Run Jest with --detectOpenHandles
         run: npx jest --detectOpenHandles
