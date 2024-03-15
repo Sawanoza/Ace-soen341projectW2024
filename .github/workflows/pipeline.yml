@@ -27,8 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Server
-        run: Backend/node app.js
+      - name: Navigate to Backend directory
+        run: cd Backend
+
+      - name: Run Node app.js
+        run: node app.js
 
       - name: Run Jest with --detectOpenHandles
         run: npx jest --detectOpenHandles
