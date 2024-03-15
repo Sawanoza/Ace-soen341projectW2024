@@ -27,8 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run unit tests 
-        run: npm test 
+      - name: Run Jest with --detectOpenHandles
+        run: npx jest --detectOpenHandles
+
+      #- name: Run unit tests 
+      #  run: npm test 
 
 # Additional features (potentially added)
 # Linting
