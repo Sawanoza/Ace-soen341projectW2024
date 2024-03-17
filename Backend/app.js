@@ -4,9 +4,9 @@ const path = require("path");
 const db = require("../Database/db.js");
 const app = express();
 
+//testing
 const http = require('http');
 const server = http.createServer(app);
-
 
 app.use(cors());
 app.use(express.json());
@@ -283,7 +283,7 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
 // ___________  END OF DELETE ___________
 
 
-//Start the server
+// Start the server
 beforeAll((done) => {
   server.listen(8800, () => {
     console.log("Connected to backend.");
@@ -291,7 +291,7 @@ beforeAll((done) => {
   });
 });
 
-//Close the server
+// Close the server
 afterAll((done) => {
   server.close(() => {
     console.log('Server closed');
