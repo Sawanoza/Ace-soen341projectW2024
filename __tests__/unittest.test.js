@@ -1,5 +1,56 @@
 const request = require("supertest");
 const app = require("../Backend/app.js");
+const db = require("../Database/db.js");
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** 
+let server; // Declare a variable to hold the server instance
+
+beforeAll((done) => {
+  // Start the server before running any tests
+  server = app.listen(8801, () => {
+    console.log("Connected to backend.");
+    done(); // Call done() to indicate that the setup is complete
+  });
+});
+
+afterAll((done) => {
+  // Close the server after running all tests
+  server.close(() => {
+    console.log("Server closed.");
+    done(); // Call done() to indicate that the teardown is complete
+  });
+});
+*/
+afterAll (() => {
+  db.end();
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 describe("GET /users", () => {
   it("responds with JSON containing all users", async () => {
@@ -202,4 +253,3 @@ describe("DELETE /HasReserved/:UserID/:VehicleID", () => {
     expect(res.text).toBe("Reservation cancelled successfully");
   });
 });
-

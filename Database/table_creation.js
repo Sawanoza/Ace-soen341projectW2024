@@ -3,9 +3,7 @@ var express = require("express");
 
 const app = express();
 
-app.listen(8800, () => {
-  console.log("connected to back end");
-});
+
 // make sure mysql is set up on your local system
 // use command "mysql -u root -p" to sign into sql in your terminal before running the code below
 // "npm install mysql" in your local terminal to install the library we are using
