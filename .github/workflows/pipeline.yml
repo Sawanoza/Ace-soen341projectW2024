@@ -25,6 +25,11 @@ jobs:
       #- name: Set executable permission
       #  run: chmod +x node_modules/.bin/jest
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
       - name: Install dependencies
         run: npm install
 
