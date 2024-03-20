@@ -283,21 +283,13 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
 // ___________  END OF DELETE ___________
 
 
-// Start the server
-beforeAll((done) => {
-  server.listen(8800, () => {
-    console.log("Connected to backend.");
-    done();
+//Check if the script is run directly using Node.js (Fixed interferance with Jest)
+if (require.main === module) {
+  app.listen(8800, () => {
+  console.log("Connected to backend.");
   });
-});
+}
 
-// Close the server
-afterAll((done) => {
-  server.close(() => {
-    console.log('Server closed');
-    done();
-  });
-});
 
 module.exports = app;
 

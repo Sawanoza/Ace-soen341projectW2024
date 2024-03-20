@@ -6,48 +6,15 @@ const db = require("../Database/db.js");
 
 
 
-
-
-
-
-
-
-
-
-/** 
-let server; // Declare a variable to hold the server instance
-
-beforeAll((done) => {
-  // Start the server before running any tests
-  server = app.listen(8801, () => {
-    console.log("Connected to backend.");
-    done(); // Call done() to indicate that the setup is complete
-  });
+const server = app.listen(8800, () => {
+  console.log("Connected to backend.");
 });
 
+//close the server & database after tests
 afterAll((done) => {
-  // Close the server after running all tests
-  server.close(() => {
-    console.log("Server closed.");
-    done(); // Call done() to indicate that the teardown is complete
-  });
-});
-*/
-
-afterAll (() => {
+  server.close(done);
   db.end();
-})
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 
