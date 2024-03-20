@@ -30,8 +30,8 @@ jobs:
     #  - name: Navigate to Backend directory and Run node app.js
     #    run: cd Backend && node app.js
 
-      #- name: Run Jest with --detectOpenHandles
-      #  run: npx jest --detectOpenHandles
+      - name: Run Jest with --runInBand --detectOpenHandles --forceExit
+        run: npm test
 
       #- name: Run unit tests 
       #  run: npm test 
