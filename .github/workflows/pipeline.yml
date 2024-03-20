@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: windows-latest
 
     steps:
@@ -24,9 +24,6 @@ jobs:
 
       - name: Run Jest with --runInBand --detectOpenHandles --forceExit
         run: npm test
-
-      #- name: Run unit tests 
-      #  run: npm test 
 
 # Additional features (potentially added)
 # Linting
