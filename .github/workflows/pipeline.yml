@@ -12,6 +12,12 @@ jobs:
   test:
     runs-on: windows-latest
 
+    env:
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASSWORD: root
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
