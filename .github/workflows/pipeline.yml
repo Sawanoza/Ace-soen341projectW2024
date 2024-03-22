@@ -27,6 +27,9 @@ jobs:
 
 
     steps:
+      - name: Pull MySQL Docker image
+        run: docker pull mysql:8.0.36
+      
       - name: Checkout code
         uses: actions/checkout@v2
 
