@@ -58,6 +58,11 @@ app.get("/reservations", (req, res) => {
   });
 });
 
+app.get('/AdminPage', (req, res) => {
+  res.sendFile(path.join(__dirname, "public/AdminPage.html"));
+});
+
+
 app.get("/read_reservations", (req, res) => {
   res.sendFile(path.join(__dirname, "public/read_reservations.html"));
 });
@@ -349,4 +354,25 @@ app.put("/Users/:UserID", (req, res) => {
 });
 
 //_______ END OF UPDATE _________
+
+//_______ START SEACH ___________
+
+app.get('/search', (req, res) => {
+  const searchTerm = req.query.term;
+  // Perform a database query to find vehicles matching the search term
+  const query = `SELECT * FROM Vehicles WHERE brand LIKE '%${searchTerm}%' OR name LIKE '%${searchTerm}%'`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error searching for vehicles:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json(results); // Send the search results back to the client
+  });
+});
+
+// _______ END OF SEARCH _________
+
+
+
 
