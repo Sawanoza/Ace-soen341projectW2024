@@ -10,31 +10,45 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
-
-    services:
-      mysql:
-        image: mysql:8.0.36  # Updated MySQL version (e.g., 8.0)
-        env:
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-
-
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        os: [windows-latest]
       
+        
+    steps:      
+      - name: Checkout code
+        uses: actions/checkout@v2
 
 
-    steps:
+
+
+
+
+
+
+        
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v2
+
+      - name: Start MySQL container
+        run: |
+          docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.36
+        shell: bash
+
       - name: Check MySQL version
         run: |
           echo "MySQL Version:"
           mysql --version
         shell: bash
-      
-      - name: Checkout code
-        uses: actions/checkout@v2
+
+
+
+
+
+
+
 
       - name: Set executable permission
         run: chmod +x node_modules/.bin/jest
