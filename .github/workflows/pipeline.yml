@@ -29,6 +29,9 @@ jobs:
     steps:
       - name: Pull MySQL Docker image
         run: docker pull mysql:8.0.36
+
+      - name: Check MySQL version
+        run: docker exec -it mysql mysql --version
       
       - name: Checkout code
         uses: actions/checkout@v2
