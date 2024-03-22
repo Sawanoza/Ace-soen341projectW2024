@@ -10,17 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-
-    env:
-      DB_HOST: localhost
-      DB_USER: root
-      DB_PASSWORD: root
-
+    runs-on: windows-latest
 
     services:
       mysql:
-        image: mysql:8.0  # Updated MySQL version (e.g., 8.0)
+        image: mysql:8.0.36  # Updated MySQL version (e.g., 8.0)
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
@@ -36,13 +30,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set executable permission
-        run: chmod +x node_modules/.bin/jest
+     # - name: Set executable permission
+     #   run: chmod +x node_modules/.bin/jest
         
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '20.11.1'
 
       - name: Install dependencies
         run: npm install
