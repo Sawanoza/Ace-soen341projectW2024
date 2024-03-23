@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Details</title>
+</head>
+<body>
+    <h1>Branch Details</h1>
+    <div id="branchDetails"></div>
+
+    <script>
+        // Function to extract query parameters from the URL
+        function getQueryParam(parameterName) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(parameterName);
+        }
+
+        // Retrieve the branch ID from the URL
+        const branchID = getQueryParam('id');
+
+        // Fetch branch details based on the branch ID
+        fetch(`/branches/${branchID}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Branch ID not found.');
+                }
+                return response.json();
+            })
+            .then(branch => {
+                // Display branch details
+                const branchDetailsElement = document.getElementById('branchDetails');
+                branchDetailsElement.innerHTML = `
+                    <p>Branch ID: ${branch.id}</p>
+                    <p>Location: ${branch.location}</p>
+                    <h2>Vehicles:</h2>
+                    <ul>
+                        ${branch.vehicles.map(vehicle => `<li>${vehicle.Name} - ${vehicle.Brand}</li>`).join('')}
+                    </ul>
+                `;
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('branchDetails').textContent = 'Branch ID not found.';
+            });
+    </script>
+</body>
+</html>
+
+

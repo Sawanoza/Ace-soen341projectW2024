@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Branch Search</title>
+    <style>
+        /* Style for the container */
+        .svg-container {
+            position: absolute;
+            top: 50%; /* Position from the top */
+            right: 0; /* Align to the right side */
+            transform: translateY(-50%); /* Center vertically */
+        }
+        /* Style for the SVG (optional) */
+        .svg-container svg {
+            width: 100%; /* Make sure SVG fills its container */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vehicle Search</h1>
+    </header>
+    <form id="vehicleSearchForm">
+        <input type="text" id="vehicleSearchInput" placeholder="Search Vehicle">
+        <button type="submit">Search</button>
+    </form>
+    <div id="vehicleSearchResults"></div>
+    <div id="vehicleList"></div> <!-- Add a div to display the list of vehicles -->
+
+    <script>
+        const vehicleSearchForm = document.getElementById('vehicleSearchForm');
+        const vehicleSearchInput = document.getElementById('vehicleSearchInput');
+        const vehicleSearchResults = document.getElementById('vehicleSearchResults');
+        const vehicleList = document.getElementById('vehicleList'); // Get the div to display vehicle list
+    
+        vehicleSearchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = vehicleSearchInput.value.trim();
+    
+            if (query === '') {
+                vehicleSearchResults.innerHTML = 'Please enter a search query.';
+                return;
+            }
+    
+            // Send a GET request to the /search/vehicles endpoint with the search query
+            const response = await fetch(`/search/vehicles?term=${encodeURIComponent(query)}`);
+            const data = await response.json();
+    
+            // Render search results
+            renderVehicleSearchResults(data);
+        });
+    
+        function renderVehicleSearchResults(results) {
+            vehicleSearchResults.innerHTML = ''; // Clear previous search results
+    
+            if (results.length === 0) {
+                vehicleSearchResults.innerHTML = 'No results found.';
+                return;
+            }
+    
+            const ul = document.createElement('ul');
+            results.forEach(vehicle => {
+                const li = document.createElement('li');
+                // Wrap each result in an anchor tag linking to vehicle_details.html with vehicle ID as query parameter
+                li.innerHTML = `<a href="vehicle_details.html?id=${vehicle.VehicleID}">Vehicle ID: ${vehicle.VehicleID}, Brand: ${vehicle.Brand}, Name: ${vehicle.Name}, Type: ${vehicle.Type}</a>`;
+                ul.appendChild(li);
+            });
+            vehicleSearchResults.appendChild(ul);
+        }
+
+        // Function to fetch and display the list of vehicles
+        async function displayVehicleList() {
+            try {
+                const response = await fetch('http://localhost:8800/vehicles');
+                const vehicles = await response.json();
+
+                const ul = document.createElement('ul');
+                vehicles.forEach(vehicle => {
+                    const li = document.createElement('li');
+                    // Wrap each vehicle in an anchor tag linking to vehicle_details.html with vehicle ID as query parameter
+                    li.innerHTML = `<a href="vehicle_details.html?id=${vehicle.VehicleID}">Vehicle ID: ${vehicle.VehicleID}, Brand: ${vehicle.Brand}, Name: ${vehicle.Name}</a>`;
+                    ul.appendChild(li);
+                });
+                vehicleList.innerHTML = ''; // Clear previous content
+                vehicleList.appendChild(ul);
+            } catch (error) {
+                console.error('Error fetching vehicle list:', error);
+            }
+        }
+
+        // Call the function to display the list of vehicles
+        displayVehicleList();
+    </script>
+
+<br>
+You can enter an ID, Name, Brand, or Type.
+</body>
+</html>

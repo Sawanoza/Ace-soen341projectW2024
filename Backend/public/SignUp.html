@@ -1,81 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <title>User Form</title>
-  </head>
-  <body>
-    <header>
-      <h1>User Registration</h1>
-    </header>
-    <form id="userForm" action="/create_user" method="POST" onsubmit="submitForm(event)">
-      <fieldset>
-        <label for="userId">User ID:</label><br />
-        <input type="text" id="userId" name="userId" required /><br />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css" />
+  <title>User Form</title>
+</head>
+<body>
+  <header>
+    <h1>User Registration</h1>
+  </header>
+  <form id="userForm" action="/create_user" method="POST" onsubmit="submitForm(event)">
+    <fieldset>
+      <label for="firstName">First Name:</label><br />
+      <input type="text" id="firstName" name="firstName" required /><br />
 
-        <label for="firstName">First Name:</label><br />
-        <input type="text" id="firstName" name="firstName" required /><br />
+      <label for="lastName">Last Name:</label><br />
+      <input type="text" id="lastName" name="lastName" required /><br />
 
-        <label for="lastName">Last Name:</label><br />
-        <input type="text" id="lastName" name="lastName" required /><br />
+      <label for="contactNo">Contact No:</label><br />
+      <input type="tel" id="contactNo" name="contactNo" required /><br />
 
-        <label for="contactNo">Contact No:</label><br />
-        <input type="tel" id="contactNo" name="contactNo" required /><br />
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" name="email" required /><br />
 
-        <label for="email">Email:</label><br />
-        <input type="email" id="email" name="email" required /><br />
+      <label for="address">Address:</label><br />
+      <input type="text" id="address" name="address" required /><br />
 
-        <label for="address">Address:</label><br />
-        <input type="text" id="address" name="address" required /><br />
+      <label for="isCust">Is Customer:</label><br />
+      <select id="isCust" name="isCust" required>
+        <option value="0">False</option>
+        <option value="1">True</option>
+      </select><br />
 
-        <label for="isCust">Is Customer:</label><br />
-        <select id="isCust" name="isCust" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
+      <label for="isAdmin">Is Admin:</label><br />
+      <select id="isAdmin" name="isAdmin" required>
+        <option value="0">False</option>
+        <option value="1">True</option>
+      </select><br />
 
-        <label for="isAdmin">Is Admin:</label><br />
-        <select id="isAdmin" name="isAdmin" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
+      <label for="isRep">Is Representative:</label><br />
+      <select id="isRep" name="isRep" required>
+        <option value="0">False</option>
+        <option value="1">True</option>
+      </select><br />
 
-        <label for="isRep">Is Representative:</label><br />
-        <select id="isRep" name="isRep" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
+      <br /><br />
+      <button type="reset">Reset</button>
+      <button type="submit">Submit</button>
+    </fieldset>
+  </form>
 
-        <br /><br />
-        <button type="reset">Reset</button>
-        <button type="submit">Submit</button>
-      </fieldset>
-    </form>
+  <script>
+    function submitForm(event) {
+      event.preventDefault(); // Prevent the default form submission behavior
 
-    <script>
-      function submitForm(event) {
-        event.preventDefault(); // Prevent the default form submission behavior
-
-        // Submit the form data via fetch API
-        fetch('/create_user', {
-          method: 'POST',
-          body: new FormData(document.getElementById('userForm')) // Serialize form data
-        })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = 'Branching.html'; // Redirect to branching.html on success
-          } else {
-            console.error('Failed to create user:', response.statusText);
-          }
-        })
-        .catch(error => {
-          console.error('Error creating user:', error);
-        });
-      }
-    </script>
-  </body>
+      // Submit the form data via fetch API
+      fetch('/create_user', {
+        method: 'POST',
+        body: new FormData(document.getElementById('userForm')) // Serialize form data
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = 'Map.html'; // Redirect to branching.html on success
+        } else {
+          console.error('Failed to create user:', response.statusText);
+        }
+      })
+      .catch(error => {
+        console.error('Error creating user:', error);
+      });
+    }
+  </script>
+</body>
 </html>
+
 
 
 
