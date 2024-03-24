@@ -3,6 +3,10 @@ const cors = require("cors");
 const path = require("path");
 const db = require("../Database/db.js");
 const app = express();
+const nodemailer = require('nodemailer');
+const readline = require('readline');
+const bodyParser = require('body-parser');
+
 
 //testing
 const http = require('http');
@@ -284,11 +288,7 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
 
 
 //Check if the script is run directly using Node.js (Fixed interferance with Jest)
-if (require.main === module) {
-  app.listen(8800, () => {
-  console.log("Connected to backend.");
-  });
-}
+
 
 
 module.exports = app;
@@ -358,4 +358,122 @@ app.put("/Users/:UserID", (req, res) => {
 });
 
 //_______ END OF UPDATE _________
+//---------CHECKOUT--------------
+
+app.use(bodyParser.json());
+
+app.get("/checkout", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/checkout.html"));
+});
+
+app.post('/checkout', (req, res) => {
+  console.log("Connected");
+  // Parsing boolean values directly from req.body
+  const userId = req.body.userId;
+  const vehicleId = req.body.vehicleId;
+  const isDamaged = req.body.isDamaged; // Assuming the client sends a boolean
+  const damageDetails = req.body.damageDetails;
+  const isStolen = req.body.isStolen;
+  const email= req.body.email;
+   // Assuming the client sends a boolean
+
+  // Define constants for late fee and damage fee
+  const LATE_FEE_PER_HOUR = 25; // Example value, adjust as needed
+  const DAMAGE_FEE = 100; // Example value, adjust as needed
+
+  // 1. Check reservation existence and deletion
+  db.query('SELECT * FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, reservations) => {
+    if (error) {
+      console.error('Database error:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    if (reservations.length === 0) {
+      res.status(404).send('Reservation not found');
+      return;
+    }
+
+    const reservation = reservations[0];
+
+    // Delete the reservation
+    db.query('DELETE FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, result) => {
+      if (error) {
+        console.error('Error deleting reservation:', error);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      // 2. Calculate extra charges, if applicable
+      let totalExtraCharges = 0;
+      const currentTime = new Date();
+      const reservationEndTime = new Date(reservation.EndTime);
+
+      if (currentTime > reservationEndTime) {
+        const hoursLate = Math.ceil((currentTime - reservationEndTime) / (1000 * 60 * 60));
+        totalExtraCharges += hoursLate * LATE_FEE_PER_HOUR;
+      }
+
+      if (isDamaged) {
+        totalExtraCharges += DAMAGE_FEE;
+      }
+
+      // Omitting email sending for brevity
+
+      res.json({ success: true, message: 'Reservation checked out successfully!', extraCharges: totalExtraCharges });
+
+  const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  auth: {
+    user: 'mustafa.abulh4@gmail.com',
+    pass: 'xsrs ajej lsae makx'
+    ,
+  },
+});
+const mailOptions = {
+  from: 'mustafa.abulh4@gmail.com', // sender address
+  to: email, // list of receivers
+  subject: 'Checkout Confirmation', // Subject line
+  text: `Hello,
+
+Your checkout has been processed successfully.
+
+Details:
+- User ID: ${userId}
+- Vehicle ID: ${vehicleId}
+- Extra Charges: $${totalExtraCharges}
+${isDamaged ? `\n- Damage Details: ${damageDetails}` : ''}
+${isStolen ? '\n- Note: Vehicle reported stolen.' : ''}
+
+Thank you for using our service.
+
+Best,
+Your Company Name`
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Email could not be sent.' });
+  } else {
+    console.log('Email sent: ' + info.response);
+    res.json({ success: true, message: 'Reservation checked out successfully!', extraCharges: totalExtraCharges });
+  }
+});
+
+transporter.verify().then(console.log).catch(console.error);
+
+    });
+  });
+});
+
+
+/////////////////////////////////////////////////////////////////////////
+if (require.main === module) {
+  app.listen(8800, () => {
+  console.log("Connected to backend.");
+  });
+}
+
 
