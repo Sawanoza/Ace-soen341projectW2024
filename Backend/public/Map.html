@@ -21,45 +21,51 @@
     <header>
         <h1>Branch Search</h1>
     </header>
-    <p>Want information on a vehicle? <a href="map_vehicles.html">Search for it here!</a></p> <!-- Add the message and link here -->
+    <p>Want information on a vehicle? <a href="map_vehicles.html">Search for it here!</a></p> 
+    <br>
+    You can enter an ID or location.
     <form id="searchForm">
         <input type="text" id="searchInput" placeholder="Search Branch">
         <button type="submit">Search</button>
     </form>
     <div id="searchResults"></div>
     <div id="branchList"></div> <!-- Add a div to display the list of branches -->
-    
+    <div id="userID"></div> <!-- Add a div to display the user ID -->
+    <button id="confirmReservationButton">Confirm Reservation</button> <!-- Add a button to confirm reservation -->
+
     <script>
         const searchForm = document.getElementById('searchForm');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         const branchList = document.getElementById('branchList'); // Get the div to display branch list
-    
+        const userIDDiv = document.getElementById('userID'); // Get the div to display user ID
+        const confirmReservationButton = document.getElementById('confirmReservationButton'); // Get the button for confirming reservation
+
         searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             const query = searchInput.value.trim();
-    
+
             if (query === '') {
                 searchResults.innerHTML = 'Please enter a search query.';
                 return;
             }
-    
+
             // Send a GET request to the /search endpoint with the search query
             const response = await fetch(`/search?term=${encodeURIComponent(query)}`);
             const data = await response.json();
-    
+
             // Render search results
             renderSearchResults(data);
         });
-    
+
         function renderSearchResults(results) {
             searchResults.innerHTML = ''; // Clear previous search results
-    
+
             if (results.length === 0) {
                 searchResults.innerHTML = 'No results found.';
                 return;
             }
-    
+
             const ul = document.createElement('ul');
             results.forEach(branch => {
                 const li = document.createElement('li');
@@ -90,13 +96,27 @@
             }
         }
 
+        // Function to display the user ID
+        function displayUserID() {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                userIDDiv.textContent = `User ID: ${userID}`;
+            } else {
+                userIDDiv.textContent = 'User ID not found.';
+            }
+        }
+
         // Call the function to display the list of branches
         displayBranchList();
-    </script>
 
-<br>
-You can enter an ID or location.
+        // Call the function to display the user ID
+        displayUserID();
+
+        // Add event listener to the Confirm Reservation button
+        confirmReservationButton.addEventListener('click', function() {
+            window.location.href = 'confirm_reservation.html'; // Redirect to confirm_reservation.html
+        });
+    </script>
 
 </body>
 </html>
-

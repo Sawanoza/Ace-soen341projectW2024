@@ -20,6 +20,26 @@ app.get("/users", (req, res) => {
   });
 });
 
+
+app.post("/signin", (req, res) => {
+  const { email, password } = req.body;
+
+  const query = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+
+    if (results.length > 0) {
+      const userId = results[0].UserID;
+      res.status(200).json({ userId });
+    } else {
+      res.status(401).send("Invalid email or password");
+    }
+  });
+});
+
 app.post("/create_reservation", function (req, res) {
   console.log([
     req.body.vehicleId,
