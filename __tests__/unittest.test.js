@@ -203,3 +203,11 @@ describe("DELETE /HasReserved/:UserID/:VehicleID", () => {
   });
 });
 
+describe("GET /branches", () => {
+  it("responds with JSON containing all branches", async () => {
+    const response = await request(app).get("/branches");
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(Array.isArray(response.body)).toBe(true);
+  });
+});
