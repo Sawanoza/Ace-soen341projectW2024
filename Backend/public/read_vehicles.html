@@ -37,7 +37,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Vehicle data will be inserted here -->
+     
     </tbody>
   </table>
   <br />
@@ -78,7 +78,7 @@
   const branchId = branchSelector.value;
 
   if (branchId) {
-    // Fetch request to get the current branch of the vehicle
+    
     fetch(`/vehicles/${vehicleID}/branch`)
       .then((response) => {
         if (!response.ok) {
@@ -89,13 +89,13 @@
       .then((data) => {
         const currentBranchId = data.BranchID;
 
-        // Delete request to remove the vehicle assignment from the current branch
+        
         fetch(`/branches/${currentBranchId}/vehicles/${vehicleID}`, {
           method: 'DELETE'
         })
         .then(deleteResponse => {
           if (deleteResponse.ok) {
-            // Proceed to assign the vehicle to the new branch
+            
             fetch(`/branches/${branchId}/vehicles`, {
               method: 'POST',
               headers: {
@@ -106,7 +106,7 @@
             .then(postResponse => {
               if (postResponse.ok) {
                 console.log(`Vehicle with ID ${vehicleID} assigned to branch ${branchId}`);
-                // Refresh the page to update the vehicle list
+               
                 location.reload();
               } else {
                 console.error('Error assigning vehicle to branch:', postResponse.statusText);

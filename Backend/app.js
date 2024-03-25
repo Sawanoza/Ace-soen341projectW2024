@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const db = require("../Database/db.js");
+const nodemailer = require("nodemailer");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -103,9 +104,8 @@ app.get("/vehicles", (req, res) => {
 });
 
 app.get('/vehicles/:vehicleID', (req, res) => {
-  const vehicleID = req.params.vehicleID; // Retrieve the vehicle ID from the URL parameters
+  const vehicleID = req.params.vehicleID; 
 
-  // Query the database to get vehicle details based on the ID
   db.query('SELECT * FROM Vehicles WHERE VehicleID = ?', [vehicleID], (err, results) => {
       if (err) {
           console.error('Error retrieving vehicle details:', err);
@@ -113,13 +113,13 @@ app.get('/vehicles/:vehicleID', (req, res) => {
           return;
       }
 
-      // If no results are found, return a 404 error
+      
       if (results.length === 0) {
           res.status(404).json({ error: 'Vehicle not found' });
           return;
       }
 
-      // If vehicle details are found, return them as JSON
+      
       res.json(results[0]);
   });
 });
@@ -181,6 +181,45 @@ app.post("/create_user", function (req, res) {
   });
 });
 
+app.post("/create_usertemp", function (req, res) { //Delete it once the official sign up page is done
+  console.log([
+    req.body.userId,
+    req.body.firstName,
+    req.body.lastName,
+    req.body.contactNo,
+    req.body.email,
+    req.body.password,
+    req.body.address,
+    req.body.isCust,
+    req.body.isAdmin,
+    req.body.isRep,
+  ]);
+
+  const q =
+    "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, password, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  const values = [
+    req.body.userId,
+    req.body.firstName,
+    req.body.lastName,
+    req.body.contactNo,
+    req.body.email,
+    req.body.password,
+    req.body.address,
+    req.body.isCust,
+    req.body.isAdmin,
+    req.body.isRep,
+  ];
+
+  db.query(q, values, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+    res.redirect("/Map.html");
+  });
+});
+
 app.post("/item", function (req, res) {
   console.log([
     req.body.vehicleId,
@@ -215,7 +254,7 @@ app.post("/item", function (req, res) {
     
     // After inserting the vehicle into the Vehicles table, assign it to branch 1 by default
     const assignToBranchQuery = "INSERT INTO BranchVehicles (BranchID, VehicleID) VALUES (?, ?)";
-    const branchId = 1; // Assuming branch 1 is the default branch
+    const branchId = 1; 
     const vehicleId = req.body.vehicleId;
     
     db.query(assignToBranchQuery, [branchId, vehicleId], (assignErr, assignData) => {
@@ -448,7 +487,7 @@ app.get('/search/vehicles', (req, res) => {
   const searchTerm = req.query.term;
 
   if (!isNaN(searchTerm)) {
-    // If the search term is a number, search by VehicleID
+   
     const query = `SELECT * FROM Vehicles WHERE VehicleID = ${searchTerm}`;
     db.query(query, (err, results) => {
       if (err) {
@@ -459,7 +498,7 @@ app.get('/search/vehicles', (req, res) => {
       res.json(results); 
     });
   } else {
-    // If the search term is not a number, search by Brand, Name, or Type
+
     const query = `
       SELECT * FROM Vehicles 
       WHERE Brand LIKE '%${searchTerm}%' 
@@ -624,5 +663,11 @@ app.get("/vehicles/:vehicleId/branch", (req, res) => {
     return res.json({ BranchID: branchId });
   });
 });
+
+
+
+
+
+
 
 

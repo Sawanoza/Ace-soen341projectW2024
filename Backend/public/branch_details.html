@@ -12,22 +12,22 @@
     <form id="reservationForm">
         <h2>Select Vehicles</h2>
         <div id="vehicleList"></div>
-        <!-- Replace "Create Reservation" with "Confirm" -->
+        
         <button type="submit">Confirm</button>
     </form>
 
     <script>
-        // Function to extract query parameters from the URL
+      
         function getQueryParam(parameterName) {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             return urlParams.get(parameterName);
         }
 
-        // Retrieve the branch ID from the URL
+       
         const branchID = getQueryParam('id');
 
-        // Fetch branch details based on the branch ID
+    
         fetch(`/branches/${branchID}`)
             .then(response => {
                 if (!response.ok) {
@@ -36,7 +36,7 @@
                 return response.json();
             })
             .then(branch => {
-                // Display branch details
+              
                 const branchDetailsElement = document.getElementById('branchDetails');
                 branchDetailsElement.innerHTML = `
                     <p>Branch ID: ${branch.id}</p>
@@ -57,27 +57,27 @@
                 document.getElementById('branchDetails').textContent = 'Branch ID not found.';
             });
 
-        // Function to handle form submission
+       
         document.getElementById('reservationForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
-            // Get selected vehicle IDs
+            
             const selectedVehicles = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
-            // If no vehicles are selected, show error message
+          
             if (selectedVehicles.length === 0) {
                 alert('Please select at least one available vehicle.');
                 return;
             }
 
-            // Store selected vehicles in local storage
+            
             const userID = localStorage.getItem('UserID');
             if (userID) {
                 const storedVehicles = JSON.parse(localStorage.getItem(userID)) || [];
                 const updatedVehicles = [...storedVehicles, ...selectedVehicles];
                 localStorage.setItem(userID, JSON.stringify(updatedVehicles));
                 
-                // Redirect to Map.html
+                
                 window.location.href = '/Map.html';
             } else {
                 alert('User ID not found.');

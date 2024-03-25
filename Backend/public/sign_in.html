@@ -23,12 +23,12 @@
 
     <script>
         document.getElementById('signInForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault(); 
 
-            // Get form data
+           
             const formData = new FormData(this);
 
-            // Send POST request to sign-in endpoint
+          
             fetch('/signin', {
                 method: 'POST',
                 headers: {
@@ -43,14 +43,14 @@
                 if (!response.ok) {
                     throw new Error('Sign-in failed.');
                 }
-                // Parse the JSON response
+               
                 return response.json();
             })
             .then(data => {
-                // Store UserID in local storage
+                
                 localStorage.setItem('UserID', data.userId);
-                // Redirect to map page on successful sign-in
-                window.location.href = '/Map.html'; // Replace with actual map page URL
+            
+                window.location.href = '/Map.html'; 
             })
             .catch(error => {
                 console.error(error);

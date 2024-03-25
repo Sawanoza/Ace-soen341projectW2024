@@ -40,7 +40,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- User data will be inserted here -->
+          
         </tbody>
     </table>
     <div class="button-container">
@@ -52,7 +52,7 @@
             window.location.href = '/Update_users.html';
         }
 
-        // Fetch user data and populate the table
+       
         window.onload = function () {
             fetch("/users")
                 .then((response) => response.json())

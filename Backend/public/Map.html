@@ -3,16 +3,16 @@
 <head>
     <title>Branch Search</title>
     <style>
-        /* Style for the container */
+        
         .svg-container {
             position: absolute;
-            top: 50%; /* Position from the top */
-            right: 0; /* Align to the right side */
-            transform: translateY(-50%); /* Center vertically */
+            top: 50%; 
+            right: 0; 
+            transform: translateY(-50%); 
         }
-        /* Style for the SVG (optional) */
+        
         .svg-container svg {
-            width: 100%; /* Make sure SVG fills its container */
+            width: 100%; 
             height: auto;
         }
     </style>
@@ -29,17 +29,17 @@
         <button type="submit">Search</button>
     </form>
     <div id="searchResults"></div>
-    <div id="branchList"></div> <!-- Add a div to display the list of branches -->
-    <div id="userID"></div> <!-- Add a div to display the user ID -->
-    <button id="confirmReservationButton">Confirm Reservation</button> <!-- Add a button to confirm reservation -->
+    <div id="branchList"></div> 
+    <div id="userID"></div> 
+    <button id="confirmReservationButton">Confirm Reservation</button> 
 
     <script>
         const searchForm = document.getElementById('searchForm');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
-        const branchList = document.getElementById('branchList'); // Get the div to display branch list
-        const userIDDiv = document.getElementById('userID'); // Get the div to display user ID
-        const confirmReservationButton = document.getElementById('confirmReservationButton'); // Get the button for confirming reservation
+        const branchList = document.getElementById('branchList'); 
+        const userIDDiv = document.getElementById('userID'); 
+        const confirmReservationButton = document.getElementById('confirmReservationButton'); 
 
         searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -50,16 +50,16 @@
                 return;
             }
 
-            // Send a GET request to the /search endpoint with the search query
+            
             const response = await fetch(`/search?term=${encodeURIComponent(query)}`);
             const data = await response.json();
 
-            // Render search results
+            
             renderSearchResults(data);
         });
 
         function renderSearchResults(results) {
-            searchResults.innerHTML = ''; // Clear previous search results
+            searchResults.innerHTML = ''; 
 
             if (results.length === 0) {
                 searchResults.innerHTML = 'No results found.';
@@ -69,14 +69,14 @@
             const ul = document.createElement('ul');
             results.forEach(branch => {
                 const li = document.createElement('li');
-                // Wrap each result in an anchor tag linking to branch_details.html with branch ID as query parameter
+                
                 li.innerHTML = `<a href="branch_details.html?id=${branch.id}">Branch ID: ${branch.id}, Location: ${branch.location}</a>`;
                 ul.appendChild(li);
             });
             searchResults.appendChild(ul);
         }
 
-        // Function to fetch and display the list of branches
+       
         async function displayBranchList() {
             try {
                 const response = await fetch('http://localhost:8800/branches');
@@ -85,18 +85,18 @@
                 const ul = document.createElement('ul');
                 branches.forEach(branch => {
                     const li = document.createElement('li');
-                    // Wrap each branch in an anchor tag linking to branch_details.html with branch ID as query parameter
+                  
                     li.innerHTML = `<a href="branch_details.html?id=${branch.id}">Branch ID: ${branch.id}, Location: ${branch.location}</a>`;
                     ul.appendChild(li);
                 });
-                branchList.innerHTML = ''; // Clear previous content
+                branchList.innerHTML = '';
                 branchList.appendChild(ul);
             } catch (error) {
                 console.error('Error fetching branch list:', error);
             }
         }
 
-        // Function to display the user ID
+        
         function displayUserID() {
             const userID = localStorage.getItem('UserID');
             if (userID) {
@@ -106,15 +106,15 @@
             }
         }
 
-        // Call the function to display the list of branches
+     
         displayBranchList();
 
-        // Call the function to display the user ID
+   
         displayUserID();
 
-        // Add event listener to the Confirm Reservation button
+        
         confirmReservationButton.addEventListener('click', function() {
-            window.location.href = 'confirm_reservation.html'; // Redirect to confirm_reservation.html
+            window.location.href = 'confirm_reservation.html'; 
         });
     </script>
 

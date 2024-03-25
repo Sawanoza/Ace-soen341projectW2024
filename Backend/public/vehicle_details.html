@@ -10,17 +10,17 @@
     <div id="vehicleDetails"></div>
 
     <script>
-        // Function to extract query parameters from the URL
+        
         function getQueryParam(parameterName) {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             return urlParams.get(parameterName);
         }
 
-        // Retrieve the vehicle ID from the URL
+       
         const vehicleID = getQueryParam('id');
 
-        // Fetch vehicle details based on the vehicle ID
+        
         fetch(`/vehicles/${vehicleID}`)
             .then(response => {
                 if (!response.ok) {
@@ -29,7 +29,7 @@
                 return response.json();
             })
             .then(vehicle => {
-                // Display vehicle details
+                
                 const vehicleDetailsElement = document.getElementById('vehicleDetails');
                 vehicleDetailsElement.innerHTML = `
                     <p>Vehicle ID: ${vehicle.VehicleID}</p>
@@ -43,7 +43,7 @@
                     <span id="branchInfo">Loading...</span>
                 `;
                 
-                // Fetch branch information based on the vehicle ID
+               
                 fetch(`/vehicles/${vehicleID}/branch`)
                     .then(response => {
                         if (!response.ok) {
@@ -55,7 +55,7 @@
                         // Get the branch ID
                         const branchID = branchInfo.BranchID;
                         
-                        // Fetch branch details based on the branch ID
+                        
                         fetch(`/branches/details/${branchID}`)
                             .then(response => {
                                 if (!response.ok) {

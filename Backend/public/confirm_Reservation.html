@@ -38,12 +38,19 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         .vehicle-details {
             margin: 10px 0;
         }
         .vehicle-details strong {
             font-weight: bold;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
         }
         #totalPrice {
             font-size: 18px;
@@ -61,13 +68,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .reservation-form input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
         }
         .reservation-form button {
             padding: 10px 20px;
@@ -90,19 +90,13 @@
         <div id="totalPrice"></div>
         <div id="taxes"></div>
         <form class="reservation-form" id="reservationForm">
-            <label for="startTime">Start Time:</label><br />
-            <input type="datetime-local" id="startTime" name="startTime" required /><br />
-        
-            <label for="endTime">End Time:</label><br />
-            <input type="datetime-local" id="endTime" name="endTime" required /><br />
+            <button type="submit">Proceed to payment</button>
         </p>
-            <button type="submit">Confirm Reservation</button>
+            <button type="button" id="cancelButton">Cancel</button>
         </form>
-        
     </div>
 
     <script>
-        // Function to extract user ID and selected vehicles from local storage and display them
         function displayReservationDetails() {
             const userID = localStorage.getItem('UserID');
             if (userID) {
@@ -113,7 +107,6 @@
                 const selectedVehiclesList = document.getElementById('selectedVehicles');
                 if (storedVehicles.length > 0) {
                     storedVehicles.forEach(vehicleID => {
-                        // Fetch details of each vehicle from the server
                         fetch(`/vehicles/${vehicleID}`)
                             .then(response => {
                                 if (!response.ok) {
@@ -122,20 +115,23 @@
                                 return response.json();
                             })
                             .then(vehicle => {
-                                // Create list item for each selected vehicle
                                 const listItem = document.createElement('li');
                                 listItem.classList.add('vehicle-item');
+                                listItem.setAttribute('data-vehicle-id', vehicle.VehicleID);
                                 listItem.innerHTML = `
                                     <div class="vehicle-details">
                                         <strong>Vehicle ID:</strong> ${vehicle.VehicleID}<br>
                                         <strong>Brand:</strong> ${vehicle.Brand}<br>
                                         <strong>Name:</strong> ${vehicle.Name}<br>
-                                        <strong>Price:</strong> $${vehicle.Price}
+                                        <strong>Price:</strong> $${vehicle.Price}<br>
+                                        <label for="${vehicle.VehicleID}-startTime">Start Time:</label>
+                                        <input type="datetime-local" id="${vehicle.VehicleID}-startTime" name="${vehicle.VehicleID}-startTime" required><br>
+                                        <label for="${vehicle.VehicleID}-endTime">End Time:</label>
+                                        <input type="datetime-local" id="${vehicle.VehicleID}-endTime" name="${vehicle.VehicleID}-endTime" required><br>
                                     </div>
+                                    <div class="delete-button" onclick="deleteVehicle('${vehicle.VehicleID}')"> Remove </div>
                                 `;
                                 selectedVehiclesList.appendChild(listItem);
-
-                                // Calculate total price and taxes
                                 calculateTotalPrice(vehicle.Price);
                             })
                             .catch(error => {
@@ -155,10 +151,30 @@
             }
         }
 
-        // Function to calculate total price including Federal GST and Provincial QST
+        function deleteVehicle(vehicleID) {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                let storedVehicles = JSON.parse(localStorage.getItem(userID)) || [];
+                storedVehicles = storedVehicles.filter(id => id !== vehicleID);
+                localStorage.setItem(userID, JSON.stringify(storedVehicles));
+                location.reload();
+            }
+        }
+
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+          
+                localStorage.removeItem(userID);
+          
+                window.location.href = 'Map.html';
+            }
+        });
+
+
         function calculateTotalPrice(price) {
-            const GST = 0.05; // 5% - Goods and Services Tax
-            const QST = 0.09975; // 9.975% - Quebec Sales Tax
+            const GST = 0.05;
+            const QST = 0.09975;
             const totalTax = GST + QST;
             const totalPrice = price * (1 + totalTax);
             const totalTaxAmount = totalPrice - price;
@@ -168,19 +184,35 @@
             taxesDiv.textContent = `Taxes (GST + QST): $${totalTaxAmount.toFixed(2)}`;
         }
 
-        // Call the function to display reservation details
         displayReservationDetails();
 
-        // Form submission event listener
         const reservationForm = document.getElementById('reservationForm');
         reservationForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            const startTime = document.getElementById('startTime').value.trim();
-            const endTime = document.getElementById('endTime').value.trim();
-            // Perform further actions with start and end time
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+            const selectedVehicles = [];
+            const vehicleItems = document.querySelectorAll('.vehicle-item');
+            vehicleItems.forEach(item => {
+                const vehicleID = item.getAttribute('data-vehicle-id');
+                const startTime = document.getElementById(`${vehicleID}-startTime`).value;
+                const endTime = document.getElementById(`${vehicleID}-endTime`).value;
+                selectedVehicles.push({
+                    vehicleID,
+                    startTime,
+                    endTime
+                });
+            });
+
+            localStorage.setItem(userID, JSON.stringify(selectedVehicles));
+
+            
+            window.location.href = 'Payment.html';
         });
     </script>
-
-    
 </body>
 </html>
