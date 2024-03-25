@@ -1,5 +1,24 @@
 const request = require("supertest");
 const app = require("../Backend/app.js");
+const db = require("../Database/db.js");
+
+
+
+
+
+const server = app.listen(8800, () => {
+  console.log("Connected to backend.");
+});
+
+//close the server & database after tests
+afterAll((done) => {
+  server.close(done);
+  db.end();
+});
+
+
+
+
 
 describe("GET /users", () => {
   it("responds with JSON containing all users", async () => {
@@ -202,4 +221,3 @@ describe("DELETE /HasReserved/:UserID/:VehicleID", () => {
     expect(res.text).toBe("Reservation cancelled successfully");
   });
 });
-
