@@ -38,7 +38,8 @@
 
 
 
-import React from 'react'
+import React, { useState } from 'react'
+import axios from 'axios'
 import {Container,
         FormWrap,
         Icon,
@@ -51,19 +52,28 @@ import {Container,
         Text
     } from './SigninElements'
 
-const SignIn = () => {
-  return (
+function SignIn() {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    function handleSubmit(event) {
+        event.preventDefault();
+        axios.post('http://localhost:8081/login', {email, password})
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
+    }
+
+    return (
     <>
     <Container>
         <FormWrap>
             <Icon to="/">Rent.</Icon>
             <FormContent>
-                <Form action="#">
+                <Form onSubmit={handleSubmit}>
                     <FormH1>Sign in to your account</FormH1>
-                    <FormLabel htmlFor='for'>Email</FormLabel>
-                    <FormInput type='email' required />
-                    <FormLabel htmlFor='for'>Password</FormLabel>
-                    <FormInput type='password' required />
+                    <FormLabel htmlFor='email'>Email</FormLabel>
+                    <FormInput type='email' required placeholder='Enter email' onChange={e => setEmail(e.target.value)}/>
+                    <FormLabel htmlFor='password'>Password</FormLabel>
+                    <FormInput type='password' required placeholder='Enter password' onChange={e => setPassword(e.target.value)}/>
                     <FormButton type='submit'>Continue</FormButton>
                     <Text>Forgot password</Text>
                 </Form>
