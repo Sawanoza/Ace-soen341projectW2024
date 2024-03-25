@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Car Checkout Form</title>
+    <style>
+      .detail-input {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Car Checkout</h1>
+    </header>
+    <form action="/checkout_car" method="POST" id="checkoutForm">
+     
+
+        <label for="currentMileage">Current Car Mileage:</label><br />
+        <input
+          type="number"
+          id="currentMileage"
+          name="currentMileage"
+          required
+        /><br /><br />
+
+        <label for="fuelLevel">Fuel Level:</label><br />
+        <input
+          type="number"
+          id="fuelLevel"
+          name="fuelLevel"
+          required
+        /><br /><br />
+
+        <label for="engineLight">Engine Light:</label>
+        <input type="checkbox" id="engineLight" name="engineLight" /><br />
+        <div id="engineLightDetail" class="detail-input">
+          <label for="engineLightDetailInput">Detail:</label><br />
+          <input
+            type="text"
+            id="engineLightDetailInput"
+            name="engineLightDetail"
+          />
+        </div>
+        <br />
+
+        <label for="tireDamage">Tire Damage:</label>
+        <input type="checkbox" id="tireDamage" name="tireDamage" /><br />
+        <div id="tireDamageDetail" class="detail-input">
+          <label for="tireDamageDetailInput">Detail:</label><br />
+          <input
+            type="text"
+            id="tireDamageDetailInput"
+            name="tireDamageDetail"
+          />
+        </div>
+        <br />
+
+        <label for="externalDamage">External Damage:</label>
+        <input
+          type="checkbox"
+          id="externalDamage"
+          name="externalDamage"
+        /><br />
+        <div id="externalDamageDetail" class="detail-input">
+          <label for="externalDamageDetailInput">Detail:</label><br />
+          <input
+            type="text"
+            id="externalDamageDetailInput"
+            name="externalDamageDetail"
+          />
+        </div>
+        <br />
+
+        <label for="internalDamage">Internal Damage:</label>
+        <input
+          type="checkbox"
+          id="internalDamage"
+          name="internalDamage"
+        /><br />
+        <div id="internalDamageDetail" class="detail-input">
+          <label for="internalDamageDetailInput">Detail:</label><br />
+          <input
+            type="text"
+            id="internalDamageDetailInput"
+            name="internalDamageDetail"
+          />
+        </div>
+        <br />
+
+        <br />
+        <input
+          type="text"
+          id="adminSignature"
+          name="adminSignature"
+          required
+        /><label for="adminSignature"><br /><u>Admin Signature</u></label>
+        <br /><br /><br />
+
+        <button type="reset">Reset</button>
+        <button type="submit">Submit</button>
+        <br>
+      </fieldset>
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function (checkbox) {
+          checkbox.addEventListener("change", function () {
+            const detailId = this.id + "Detail";
+            const detailInput = document.getElementById(detailId);
+            if (this.checked) {
+              detailInput.style.display = "block";
+            } else {
+              detailInput.style.display = "none";
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

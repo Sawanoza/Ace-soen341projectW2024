@@ -203,3 +203,20 @@ describe("DELETE /HasReserved/:UserID/:VehicleID", () => {
   });
 });
 
+const randomNumber = Math.floor(Math.random() * 90000) + 10000;
+
+it("responds with 200 on successful rental log insertion", async () => {
+  const newRental = {
+    userId: "1",
+    vehicleId: randomNumber.toString(),
+    returnDate: "2024-03-26",
+    cost: 50, // Example cost
+  };
+
+  const response = await request(app).post("/checkout").send(newRental);
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body).toEqual({
+    message: "Rental information inserted successfully.",
+  });
+});

@@ -2,11 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const db = require("../Database/db.js");
+const bodyParser = require("body-parser");
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get("/users", (req, res) => {
   const q = "SELECT * FROM Users";
@@ -81,6 +84,10 @@ app.get("/create_vehicles", (req, res) => {
   res.sendFile(path.join(__dirname, "public/create_vehicles.html"));
 });
 
+app.get("/check_out", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/check_out.html"));
+});
+
 app.get("/create_reservations", (req, res) => {
   res.sendFile(path.join(__dirname, "public/create_reservations.html"));
 });
@@ -95,6 +102,21 @@ app.get("/read_vehicles", (req, res) => {
 
 app.get("/read_users", (req, res) => {
   res.sendFile(path.join(__dirname, "public/read_users.html"));
+});
+
+app.get("/rent_log", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/rental_log.html"));
+});
+
+app.get("/rental_logs", (req, res) => {
+  const q = "SELECT * FROM RentalLog";
+  db.query(q, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.json(err);
+    }
+    return res.json(data);
+  });
 });
 
 app.post("/create_user", function (req, res) {
@@ -186,17 +208,17 @@ function deleteVehiculeById(id, callback) {
 }
 
 app.delete("/Vehicles/:VehicleID", (req, res) => {
-  const idToDelete = req.params.VehicleID; 
+  const idToDelete = req.params.VehicleID;
   deleteVehiculeById(idToDelete, (error, results) => {
     if (error) {
-      console.error('Error deleting vehicle by ID:', error);
-      res.status(500).send('Internal Server Error'); 
+      console.error("Error deleting vehicle by ID:", error);
+      res.status(500).send("Internal Server Error");
       return;
     }
     if (results.affectedRows === 0) {
-      res.status(404).send('Vehicle not found'); 
+      res.status(404).send("Vehicle not found");
     } else {
-      res.status(200).send('Vehicle deleted successfully'); 
+      res.status(200).send("Vehicle deleted successfully");
     }
   });
 });
@@ -226,28 +248,27 @@ function deleteUserByIdWithAssociatedRecords(id, callback) {
   });
 }
 
-
 app.delete("/Users/:UserID", (req, res) => {
   const idToDelete = req.params.UserID;
   deleteUserByIdWithAssociatedRecords(idToDelete, (error, results) => {
     if (error) {
-      console.error('Error deleting user by ID:', error);
-      res.status(500).send('Internal Server Error');
+      console.error("Error deleting user by ID:", error);
+      res.status(500).send("Internal Server Error");
       return;
     }
     if (results.affectedRows === 0) {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     } else {
-      res.status(200).send('User deleted successfully');
+      res.status(200).send("User deleted successfully");
     }
   });
 });
 
-
 //Delete reservations (I put the function inside the route handler)
 
 function cancelReservation(userID, vehicleID, callback) {
-  const query = 'DELETE FROM Car_Rental.HasReserved WHERE UserID = ? AND VehicleID = ?';
+  const query =
+    "DELETE FROM Car_Rental.HasReserved WHERE UserID = ? AND VehicleID = ?";
   db.query(query, [userID, vehicleID], (error, results) => {
     if (error) {
       callback(error, null);
@@ -260,23 +281,22 @@ function cancelReservation(userID, vehicleID, callback) {
 app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
   const userIDToDelete = req.params.UserID;
   const vehicleIDToDelete = req.params.VehicleID;
-  
+
   cancelReservation(userIDToDelete, vehicleIDToDelete, (error, results) => {
-      if (error) {
-          console.error('Error cancelling reservation:', error);
-          res.status(500).send('Internal Server Error');
-          return;
-      }
-      if (results.affectedRows === 0) {
-          res.status(404).send('Reservation not found');
-      } else {
-          res.status(200).send('Reservation cancelled successfully');
-      }
+    if (error) {
+      console.error("Error cancelling reservation:", error);
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send("Reservation not found");
+    } else {
+      res.status(200).send("Reservation cancelled successfully");
+    }
   });
 });
 
 // ___________  END OF DELETE ___________
-
 
 app.listen(8800, () => {
   console.log("Connected to backend.");
@@ -301,17 +321,17 @@ function updateVehicleById(id, newData, callback) {
 // Route to handle PUT requests for updating a vehicle by ID
 app.put("/Vehicles/:VehicleID", (req, res) => {
   const idToUpdate = req.params.VehicleID;
-  const newData = req.body; 
+  const newData = req.body;
   updateVehicleById(idToUpdate, newData, (error, results) => {
     if (error) {
-      console.error('Error updating vehicle by ID:', error);
-      res.status(500).send('Internal Server Error');
+      console.error("Error updating vehicle by ID:", error);
+      res.status(500).send("Internal Server Error");
       return;
     }
     if (results.affectedRows === 0) {
-      res.status(404).send('Vehicle not found');
+      res.status(404).send("Vehicle not found");
     } else {
-      res.status(200).send('Vehicle updated successfully');
+      res.status(200).send("Vehicle updated successfully");
     }
   });
 });
@@ -330,23 +350,98 @@ function updateUserById(id, newData, callback) {
   });
 }
 
-
 app.put("/Users/:UserID", (req, res) => {
   const idToUpdate = req.params.UserID;
-  const newData = req.body; 
+  const newData = req.body;
   updateUserById(idToUpdate, newData, (error, results) => {
     if (error) {
-      console.error('Error updating user by ID:', error);
-      res.status(500).send('Internal Server Error');
+      console.error("Error updating user by ID:", error);
+      res.status(500).send("Internal Server Error");
       return;
     }
     if (results.affectedRows === 0) {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     } else {
-      res.status(200).send('User updated successfully');
+      res.status(200).send("User updated successfully");
     }
   });
 });
 
 //_______ END OF UPDATE _________
 
+// ROUTES : //
+app.post("/checkout", (req, res) => {
+  const { userId, vehicleId, returnDate ,cost} = req.body;
+
+  // Perform insertion into RentalLog table
+  const insertQuery =
+    "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate,RentCost) VALUES (?, ?, ?,?)";
+  db.query(insertQuery, [vehicleId, userId, returnDate,cost], (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    console.log("Rental information inserted successfully.");
+    res
+      .status(200)
+      .json({ message: "Rental information inserted successfully." });
+  });
+});
+
+app.get("/checkout/:vehicleId", (req, res) => {
+  const vehicleId = req.params.vehicleId;
+  const returnDate = req.query.returnDate;
+
+  const query = "SELECT StartTime FROM HasReserved WHERE VehicleID = ?";
+
+  db.query(query, [vehicleId], (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (data.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "Vehicle not found or not reserved" });
+    }
+
+    // Assuming you have the startTime and returnDate fetched from the database
+    const startTime = new Date(data[0].StartTime);
+    const endDate = new Date(returnDate);
+    const differenceInMilliseconds = endDate - startTime;
+    const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+
+    // Respond with the calculated values
+    res.json({
+      startTime: startTime,
+      returnDate: returnDate,
+      days: days,
+      hours: hours,
+    });
+  });
+});
+
+// New route to fetch price from Vehicles table
+app.get("/getPrice/:vehicleId", (req, res) => {
+  const vehicleId = req.params.vehicleId;
+
+  const query = "SELECT Price FROM Vehicles WHERE VehicleID = ?";
+
+  db.query(query, [vehicleId], (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Vehicle not found" });
+    }
+
+    // Return the price
+    res.json({ price: data[0].Price });
+  });
+});

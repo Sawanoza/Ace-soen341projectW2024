@@ -23,10 +23,11 @@ function createTables() {
     "CREATE DATABASE IF NOT EXISTS Car_Rental;",
     "USE Car_Rental;",
     "CREATE TABLE IF NOT EXISTS Users (UserID INTEGER(9) PRIMARY KEY, ProfileImg VARCHAR(255), FirstName VARCHAR(255), LastName VARCHAR(255), ContactNo INTEGER(10), Email VARCHAR(255), Password VARCHAR(255), Address VARCHAR(255), IsCust BOOLEAN, IsAdmin BOOLEAN, IsRep BOOLEAN);",
+    "CREATE TABLE IF NOT EXISTS RentalLog (SNo INTEGER(9) NOT NULL AUTO_INCREMENT  PRIMARY KEY,VehicleID INTEGER(9) ,UserID INTEGER(9) , ReturnDate DATETIME , RentCost INTEGER(9));",
     "CREATE TABLE IF NOT EXISTS Vehicles (VehicleID INTEGER(9) PRIMARY KEY, Brand VARCHAR(255), Price INTEGER(9), Name VARCHAR(255), Mileage INTEGER(3), Images VARCHAR(2560), Seats INTEGER(1), Type VARCHAR(255), IsAvailable BOOLEAN);",
     "CREATE TABLE IF NOT EXISTS HasReserved (VehicleID INTEGER(9) PRIMARY KEY, UserID INTEGER(9), FOREIGN KEY (UserID) REFERENCES Users(UserID), StartTime DATETIME, EndTime DATETIME);",
   ];
-
+// SELECT Vehicle.Brand, Vehicle.Name , Vehicle.ID , Vehicle.Mileage ,Vehicle.Seats  FROM User , Vehicles , HasReserved WHERE User.UserID == "{id_String}" AND 
   create_tables.forEach((query) => {
     db.query(query, function (error, result) {
       if (error) {
