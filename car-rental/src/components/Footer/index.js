@@ -67,7 +67,7 @@ const Footer = () => {
                     <SocialLogo to='/' onClick={toggleHome}>Rent.</SocialLogo>
                     <WebsiteRights>Rent. © {new Date().getFullYear()} All rights reserved.</WebsiteRights>
                     <SocialIcons>
-                        <SocialIconLink href="//https://github.com/Sawanoza/Ace-soen341projectW2024" target="_blank" aria-label="GitHub">
+                        <SocialIconLink href="//github.com/Sawanoza/Ace-soen341projectW2024" target="_blank" aria-label="GitHub">
                             <FaGithub/>
                         </SocialIconLink>
                     </SocialIcons>
