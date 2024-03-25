@@ -108,6 +108,10 @@ app.get("/rent_log", (req, res) => {
   res.sendFile(path.join(__dirname, "public/rental_log.html"));
 });
 
+app.get("/agreement", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/agreement.html"));
+});
+
 app.get("/rental_logs", (req, res) => {
   const q = "SELECT * FROM RentalLog";
   db.query(q, (err, data) => {
@@ -371,21 +375,25 @@ app.put("/Users/:UserID", (req, res) => {
 
 // ROUTES : //
 app.post("/checkout", (req, res) => {
-  const { userId, vehicleId, returnDate ,cost} = req.body;
+  const { userId, vehicleId, returnDate, cost } = req.body;
 
   // Perform insertion into RentalLog table
   const insertQuery =
     "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate,RentCost) VALUES (?, ?, ?,?)";
-  db.query(insertQuery, [vehicleId, userId, returnDate,cost], (err, result) => {
-    if (err) {
-      console.error("Error executing query:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+  db.query(
+    insertQuery,
+    [vehicleId, userId, returnDate, cost],
+    (err, result) => {
+      if (err) {
+        console.error("Error executing query:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      console.log("Rental information inserted successfully.");
+      res
+        .status(200)
+        .json({ message: "Rental information inserted successfully." });
     }
-    console.log("Rental information inserted successfully.");
-    res
-      .status(200)
-      .json({ message: "Rental information inserted successfully." });
-  });
+  );
 });
 
 app.get("/checkout/:vehicleId", (req, res) => {
@@ -443,5 +451,134 @@ app.get("/getPrice/:vehicleId", (req, res) => {
 
     // Return the price
     res.json({ price: data[0].Price });
+  });
+});
+
+// Assuming you have already set up your Express app and connected to the database
+// Route to handle fetching data
+app.get("/fetch/:vehicleId/:userId", (req, res) => {
+  const vehicleId = req.params.vehicleId;
+  const userId = req.params.userId;
+
+  // SQL query to fetch required data by joining Users, Vehicles, and HasReserved tables
+  const fetchQuery = `
+    SELECT 
+      Users.UserID,
+      Users.FirstName,
+      Users.LastName,
+      Users.Address,
+      Users.ContactNo,
+      Users.Email,
+      Vehicles.Brand AS Make,
+      Vehicles.Name AS Model,
+      Vehicles.Type,
+      Vehicles.Price,
+      Vehicles.VehicleID,
+      HasReserved.StartTime AS RentalStartDate,
+      HasReserved.EndTime AS RentalEndDate,
+      RentalLog.ReturnDate
+    FROM 
+      Users
+    INNER JOIN HasReserved ON Users.UserID = HasReserved.UserID
+    INNER JOIN Vehicles ON HasReserved.VehicleID = Vehicles.VehicleID
+    LEFT JOIN RentalLog ON HasReserved.VehicleID = RentalLog.VehicleID AND HasReserved.UserID = RentalLog.UserID
+    WHERE 
+      HasReserved.VehicleID = ? AND HasReserved.UserID = ?;
+  `;
+
+  // Execute the query
+  db.query(fetchQuery, [vehicleId, userId], (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    // Prepare the Rental Agreement text
+    let rentalAgreement = `This Rental Agreement ("Agreement") is entered into between Ace Agency, located at MTL, Rue De Car Rental, hereinafter referred to as the "Rental Company," and the individual or entity identified below, hereinafter referred to as the "Renter":<br><br>`;
+
+    // Loop through the fetched data
+    result.forEach((item) => {
+      // Calculate rental period
+      const startTime = new Date(item.RentalStartDate);
+      const returnDate = new Date(item.ReturnDate || item.RentalEndDate); // Use RentalEndDate if ReturnDate is null
+      const differenceInMilliseconds = returnDate - startTime;
+      const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+
+      // Append Renter's Information
+      rentalAgreement += `<strong>1. Renter's Information:</strong><br>`;
+      rentalAgreement += `UserID: ${item.UserID}<br>`;
+      rentalAgreement += `Name: ${item.FirstName} ${item.LastName}<br>`;
+      rentalAgreement += `Address: ${item.Address}<br>`;
+      rentalAgreement += `Contact Number: ${item.ContactNo}<br>`;
+      rentalAgreement += `Email Address: ${item.Email}<br><br>`;
+
+      // Append Vehicle Information
+      rentalAgreement += `<strong>2. Vehicle Information:</strong><br>`;
+      rentalAgreement += `Make: ${item.Make}<br>`;
+      rentalAgreement += `Model: ${item.Model}<br>`;
+      rentalAgreement += `Type: ${item.Type}<br>`;
+      rentalAgreement += `Vehicle Identification Number : ${item.VehicleID}<br><br>`;
+
+      // Append Rental Details
+      rentalAgreement += `<strong>3. Rental Details:</strong><br>`;
+      rentalAgreement += `Rental Start Date: ${item.RentalStartDate}<br>`;
+      rentalAgreement += `Rental End Date: ${
+        item.ReturnDate || item.RentalEndDate
+      }<br>`;
+      rentalAgreement += `Rental Period: ${days} days ${hours} hours<br>`;
+      rentalAgreement += `Rental Rate: ${item.Price}$/hr<br>`;
+      rentalAgreement += `<pre>
+      4. Rental Terms and Conditions:
+      The Renter acknowledges receiving the vehicle described above in good condition and agrees to return it to the Rental Company in the same condition, subject to normal wear and tear.
+      The Renter agrees to use the vehicle solely for personal or business purposes and not for any illegal activities.
+      The Renter agrees to pay the Rental Company the agreed-upon rental rate for the specified rental period. Additional charges may apply for exceeding the mileage limit, late returns, fuel refueling, or other damages.
+      The Renter agrees to bear all costs associated with traffic violations, tolls, and parking fines incurred during the rental period.
+      The Renter acknowledges that they are responsible for any loss or damage to the vehicle, including theft, vandalism, accidents, or negligence, and agrees to reimburse the Rental Company for all repair or replacement costs.
+      The Renter agrees to return the vehicle to the designated drop-off location at the agreed-upon date and time. Failure to do so may result in additional charges.
+      The Rental Company reserves the right to terminate this agreement and repossess the vehicle without prior notice if the Renter breaches any terms or conditions of this agreement.
+      The Renter acknowledges receiving and reviewing a copy of the vehicle's insurance coverage and agrees to comply with all insurance requirements during the rental period.
+      5. Indemnification:
+      
+      The Renter agrees to indemnify and hold harmless the Rental Company, its employees, agents, and affiliates from any claims, liabilities, damages, or expenses arising out of or related to the Renter's use of the vehicle.
+      
+      6. Governing Law:
+      
+      This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes arising under or related to this Agreement shall be resolved exclusively by the courts of [Jurisdiction].
+      
+      7. Entire Agreement:
+      
+      This Agreement constitutes the entire understanding between the parties concerning the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral.
+      
+      8. Signatures:
+      
+      The parties hereto have executed this Agreement as of the date first written above. </pre>`;
+      rentalAgreement += `<form action="/submitForm" method="POST">
+      <h3>Renter:</h3>
+      <label for="renter_signature">Signature:</label><br>
+      <input type="text" id="renter_signature" name="renter_signature" required><br>
+      <label for="renter_print_name">Print Name:</label><br>
+      <input type="text" id="renter_print_name" name="renter_print_name" required><br>
+      <label for="renter_date">Date:</label><br>
+      <input type="text" id="renter_date" name="renter_date" required><br><br>
+    
+      <h3>Rental Company:</h3>
+      <label for="company_signature">Signature:</label><br>
+      <input type="text" id="company_signature" name="company_signature" required><br>
+      <label for="company_print_name">Print Name:</label><br>
+      <input type="text" id="company_print_name" name="company_print_name" required><br>
+      <label for="company_date">Date:</label><br>
+      <input type="text" id="company_date" name="company_date" required><br><br>
+    
+      <input type="submit" value="Submit">
+    </form>
+    `;
+    });
+
+    // Send the Rental Agreement text as HTML response
+    res.setHeader("Content-Type", "text/html");
+    res.send(rentalAgreement);
   });
 });
