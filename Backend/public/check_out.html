@@ -180,6 +180,13 @@ let totalCost;
                     } per day.<br>Cost of Renting Vehicle : $${totalPrice} <br> Additional Damage Costs : $${additional_cost} <br> Total Cost : $${
                       totalCost
                     }`;
+                    const payNowButton = document.createElement("button");
+            payNowButton.textContent = "Pay Now";
+            payNowButton.id = "payNowButton";
+            payNowButton.addEventListener("click", function () {
+                window.location.href = "payment.html";
+            });
+            document.getElementById("result").appendChild(payNowButton);
                   })
                   .catch((error) => console.error("Error:", error));
               })

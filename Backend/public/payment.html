@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .payment-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .payment-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .payment-container input[type="text"],
+        .payment-container input[type="number"],
+        .payment-container input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .payment-container input[type="submit"] {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h2>Enter Card Details</h2>
+        <form id="paymentForm">
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required><br>
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required><br>
+            <label for="cvv">CVV:</label>
+            <input type="number" id="cvv" name="cvv" placeholder="123" required><br>
+            <input type="submit" value="Pay Now">
+        </form>
+        <div id="paymentStatus" style="display: none; margin-top: 10px; font-weight: bold; color: green;">Payment Confirmed</div>
+    </div>
+
+    <script>
+        document.getElementById("paymentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            // Simulating payment confirmation
+            setTimeout(function() {
+                document.getElementById("paymentStatus").style.display = "block";
+            }, 2000); // Simulating a 2-second delay for processing payment
+        });
+    </script>
+</body>
+</html>
