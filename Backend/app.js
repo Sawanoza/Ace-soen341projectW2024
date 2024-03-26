@@ -2,14 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const db = require("../Database/db.js");
-const nodemailer = require("nodemailer");
-const bodyParser = require("body-parser");
 const app = express();
+
+//const nodemailer = require("nodemailer");
+//const bodyParser = require("body-parser");
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
+
+//app.use(bodyParser.json());
 
 //testing
 const http = require('http');
@@ -451,9 +455,12 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
 // ___________  END OF DELETE ___________
 
 
-app.listen(8800, () => {
+//Check if the script is run directly using Node.js (Fixed interferance with Jest)
+if (require.main === module) {
+  app.listen(8800, () => {
   console.log("Connected to backend.");
-});
+  });
+}
 
 module.exports = app;
 
