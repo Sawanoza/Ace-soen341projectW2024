@@ -13,17 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print a message
-        run: echo "Hello, world!"
+      - name: Checkout code
+        uses: actions/checkout@v2 
 
 
 # permissions:
 #   contents: read
 
-
-# jobs:
-#   test:
-#     runs-on: ubuntu-latest
 
       
 #     steps:      
