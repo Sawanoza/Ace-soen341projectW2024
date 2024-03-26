@@ -1,5 +1,8 @@
 name: CI/CD Pipeline
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -16,6 +19,8 @@ jobs:
     steps:      
       - name: Checkout code
         uses: actions/checkout@v2  
+        with:
+          repository:Sawanoza/Ace-soen341projectW2024
  
       - name: Set up Docker
         uses: docker/setup-docker@v2
