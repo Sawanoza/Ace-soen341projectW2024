@@ -40,7 +40,7 @@ jobs:
           node-version: '20.11.1'
 
       - name: Install dependencies
-        run: npm instal
+        run: npm install
 
       - name: Run Jest with --runInBand --detectOpenHandles --forceExit
         run: npm test
