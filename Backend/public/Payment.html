@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .payment-form {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .payment-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .payment-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment</h1>
+      
+        <form class="payment-form" id="paymentForm">
+    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required></p>
+    <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required></p>
+    <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required></p>
+    <input type="text" id="cvv" name="cvv" placeholder="CVV" required></p>
+            <button type="submit">Confirm Payment</button>
+        </form>
+    </div>
+
+    <script>
+        
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+           
+            const selectedVehicles = JSON.parse(localStorage.getItem(userID));
+            if (!selectedVehicles || selectedVehicles.length === 0) {
+                alert('No vehicles selected for reservation.');
+                return;
+            }
+
+         
+            selectedVehicles.forEach(vehicle => {
+                const reservationData = {
+                    vehicleId: vehicle.vehicleID,
+                    userId: userID,
+                    startTime: vehicle.startTime,
+                    endTime: vehicle.endTime
+                };
+
+               
+                fetch('/create_reservation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reservationData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to create reservation.');
+                    }
+                    
+                    localStorage.removeItem(userID); 
+                    
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Failed to create reservation. Please try again later.');
+                });
+            });
+
+        });
+            
+    </script>
+</body>
+</html>

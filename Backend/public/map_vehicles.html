@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Branch Search</title>
+    <style>
+       
+        .svg-container {
+            position: absolute;
+            top: 50%; 
+            right: 0; 
+            transform: translateY(-50%); 
+        }
+  
+        .svg-container svg {
+            width: 100%; 
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vehicle Search</h1>
+    </header>
+    You can enter an ID, Name, Brand, or Type.
+    <p>
+    <form id="vehicleSearchForm">
+        <input type="text" id="vehicleSearchInput" placeholder="Search Vehicle">
+        <button type="submit">Search</button>
+    </form>
+    <div id="vehicleSearchResults"></div>
+    <div id="vehicleList"></div> 
+
+    <script>
+        const vehicleSearchForm = document.getElementById('vehicleSearchForm');
+        const vehicleSearchInput = document.getElementById('vehicleSearchInput');
+        const vehicleSearchResults = document.getElementById('vehicleSearchResults');
+        const vehicleList = document.getElementById('vehicleList'); 
+    
+        vehicleSearchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = vehicleSearchInput.value.trim();
+    
+            if (query === '') {
+                vehicleSearchResults.innerHTML = 'Please enter a search query.';
+                return;
+            }
+    
+           
+            const response = await fetch(`/search/vehicles?term=${encodeURIComponent(query)}`);
+            const data = await response.json();
+    
+           
+            renderVehicleSearchResults(data);
+        });
+    
+        function renderVehicleSearchResults(results) {
+            vehicleSearchResults.innerHTML = ''; 
+    
+            if (results.length === 0) {
+                vehicleSearchResults.innerHTML = 'No results found.';
+                return;
+            }
+    
+            const ul = document.createElement('ul');
+            results.forEach(vehicle => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="vehicle_details.html?id=${vehicle.VehicleID}">Vehicle ID: ${vehicle.VehicleID}, Brand: ${vehicle.Brand}, Name: ${vehicle.Name}, Type: ${vehicle.Type}</a>`;
+                ul.appendChild(li);
+            });
+            vehicleSearchResults.appendChild(ul);
+        }
+
+       
+        async function displayVehicleList() {
+            try {
+                const response = await fetch('http://localhost:8800/vehicles');
+                const vehicles = await response.json();
+
+                const ul = document.createElement('ul');
+                vehicles.forEach(vehicle => {
+                    const li = document.createElement('li');
+                    
+                    li.innerHTML = `<a href="vehicle_details.html?id=${vehicle.VehicleID}">Vehicle ID: ${vehicle.VehicleID}, Brand: ${vehicle.Brand}, Name: ${vehicle.Name}</a>`;
+                    ul.appendChild(li);
+                });
+                vehicleList.innerHTML = ''; 
+                vehicleList.appendChild(ul);
+            } catch (error) {
+                console.error('Error fetching vehicle list:', error);
+            }
+        }
+
+        
+        displayVehicleList();
+    </script>
+
+    
+    <button onclick="window.location.href = 'Map.html';">Back to Selection</button>
+</body>
+</html>

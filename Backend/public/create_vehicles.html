@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <title>My Form</title>
-  </head>
-  <body>
-    <header>
-      <h1>A Database</h1>
-    </header>
-    <form action="/item" method="POST">
-      <fieldset>
-        <label for="vehicleId">Vehicle ID:</label><br />
-        <input type="text" id="vehicleId" name="vehicleId" required /><br />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css" />
+  <title>My Form</title>
+</head>
+<body>
+  <header>
+    <h1>A Database</h1>
+  </header>
+  <form action="/item" method="POST" id="vehicleForm">
+    <fieldset>
+      <label for="vehicleId">Vehicle ID:</label><br />
+      <input type="text" id="vehicleId" name="vehicleId" required /><br />
 
-        <label for="brand">Brand:</label><br />
-        <input type="text" id="brand" name="brand" required /><br />
+      <label for="brand">Brand:</label><br />
+      <input type="text" id="brand" name="brand" required /><br />
 
-        <label for="price">Price:</label><br />
-        <input type="number" id="price" name="price" required /><br />
+      <label for="price">Price:</label><br />
+      <input type="number" id="price" name="price" required /><br />
 
-        <label for="name">Name:</label><br />
-        <input type="text" id="name" name="name" required /><br />
+      <label for="name">Name:</label><br />
+      <input type="text" id="name" name="name" required /><br />
 
-        <label for="mileage">Mileage:</label><br />
-        <input type="number" id="mileage" name="mileage" required /><br />
+      <label for="mileage">Mileage:</label><br />
+      <input type="number" id="mileage" name="mileage" required /><br />
 
-        <label for="seats">Seats:</label><br />
-        <input type="number" id="seats" name="seats" required /><br />
+      <label for="seats">Seats:</label><br />
+      <input type="number" id="seats" name="seats" required /><br />
 
-        <label for="type">Type:</label><br />
-        <input type="text" id="type" name="type" required /><br />
+      <label for="type">Type:</label><br />
+      <input type="text" id="type" name="type" required /><br />
 
-        <label for="type">Is Available:</label><br />
-        <input type="text" id="isAvailable" name="isAvailable" required /><br />
+      <label for="isAvailable">Is Available:</label><br />
+      <input type="text" id="isAvailable" name="isAvailable" required /><br />
 
-        <br /><br />
-        <button type="reset">Reset</button>
-        <button type="submit">Submit</button>
-        <button type="submit">View Table</button>
-      </fieldset>
-    </form>
-  </body>
+      <br /><br />
+      <button type="reset">Reset</button>
+      <button type="submit">Submit</button>
+      <button type="button" id="viewTableButton">View Table</button>
+    </fieldset>
+  </form>
+
+</body>
 </html>

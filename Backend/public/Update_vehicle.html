@@ -13,7 +13,7 @@
             margin: 0;
         }
 
-
+       
         .container {
             background-color: white;
             max-width: 600px;
@@ -23,13 +23,13 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
- 
+       
         form {
             display: flex;
             flex-direction: column;
         }
 
-       
+        
         input[type="text"],
         input[type="number"],
         select {
@@ -40,14 +40,14 @@
             box-sizing: border-box; 
         }
 
-
+        
         label {
             margin-top: 20px;
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-       
+        
         button {
             background-color: #0056b3;
             color: white;
@@ -62,7 +62,7 @@
             background-color: #003d82;
         }
 
-
+        
         input[type="hidden"] {
             display: none;
         }
@@ -118,9 +118,9 @@
                 },
                 body: JSON.stringify(formData),
             })
-            .then(response => response.text()) // Use .text() if the response is plain text
+            .then(response => response.text()) 
             .then(text => {
-                alert(text); // Alert with the text response
+                alert(text); 
                 console.log('Success:', text);
             })
             .catch((error) => {

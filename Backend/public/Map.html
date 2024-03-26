@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Branch Search</title>
+    <style>
+        
+        .svg-container {
+            position: absolute;
+            top: 50%; 
+            right: 0; 
+            transform: translateY(-50%); 
+        }
+        
+        .svg-container svg {
+            width: 100%; 
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Branch Search</h1>
+    </header>
+    <p>Want information on a vehicle? <a href="map_vehicles.html">Search for it here!</a></p> 
+    <br>
+    You can enter an ID or location.
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search Branch">
+        <button type="submit">Search</button>
+    </form>
+    <div id="searchResults"></div>
+    <div id="branchList"></div> 
+    <div id="userID"></div> 
+    <button id="confirmReservationButton">Confirm Reservation</button> 
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const branchList = document.getElementById('branchList'); 
+        const userIDDiv = document.getElementById('userID'); 
+        const confirmReservationButton = document.getElementById('confirmReservationButton'); 
+
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const query = searchInput.value.trim();
+
+            if (query === '') {
+                searchResults.innerHTML = 'Please enter a search query.';
+                return;
+            }
+
+            
+            const response = await fetch(`/search?term=${encodeURIComponent(query)}`);
+            const data = await response.json();
+
+            
+            renderSearchResults(data);
+        });
+
+        function renderSearchResults(results) {
+            searchResults.innerHTML = ''; 
+
+            if (results.length === 0) {
+                searchResults.innerHTML = 'No results found.';
+                return;
+            }
+
+            const ul = document.createElement('ul');
+            results.forEach(branch => {
+                const li = document.createElement('li');
+                
+                li.innerHTML = `<a href="branch_details.html?id=${branch.id}">Branch ID: ${branch.id}, Location: ${branch.location}</a>`;
+                ul.appendChild(li);
+            });
+            searchResults.appendChild(ul);
+        }
+
+       
+        async function displayBranchList() {
+            try {
+                const response = await fetch('http://localhost:8800/branches');
+                const branches = await response.json();
+
+                const ul = document.createElement('ul');
+                branches.forEach(branch => {
+                    const li = document.createElement('li');
+                  
+                    li.innerHTML = `<a href="branch_details.html?id=${branch.id}">Branch ID: ${branch.id}, Location: ${branch.location}</a>`;
+                    ul.appendChild(li);
+                });
+                branchList.innerHTML = '';
+                branchList.appendChild(ul);
+            } catch (error) {
+                console.error('Error fetching branch list:', error);
+            }
+        }
+
+        
+        function displayUserID() {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                userIDDiv.textContent = `User ID: ${userID}`;
+            } else {
+                userIDDiv.textContent = 'User ID not found.';
+            }
+        }
+
+     
+        displayBranchList();
+
+   
+        displayUserID();
+
+        
+        confirmReservationButton.addEventListener('click', function() {
+            window.location.href = 'confirm_reservation.html'; 
+        });
+    </script>
+
+</body>
+</html>
