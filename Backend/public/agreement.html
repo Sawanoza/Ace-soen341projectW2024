@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Agreement Form</title>
+</head>
+<body>
+    <h1>Rental Agreement</h1>
+    <p>Enter UserID and VehicleID</p>
+    <form id="userVehicleForm">
+        <label for="userId">UserID:</label>
+        <input type="text" id="userId" name="userId" required><br><br>
+        <label for="vehicleId">VehicleID:</label>
+        <input type="text" id="vehicleId" name="vehicleId" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="branchInfo"></div> 
+    <div id="rentalAgreement"></div>
+    <script>
+        document.getElementById("userVehicleForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+
+            const userId = document.getElementById("userId").value;
+            const vehicleId = document.getElementById("vehicleId").value;
+
+            
+            fetch(`/vehicles/${vehicleId}/branch`)
+                .then(response => response.json())
+                .then(branchData => {
+                    
+                    document.getElementById("branchInfo").innerHTML = `<p><strong>Pick up:</strong> BranchID: ${branchData.BranchID}</p>`;
+            
+                    fetch(`/branches/details/${branchData.BranchID}`)
+                        .then(response => response.json())
+                        .then(branchDetails => {
+                            
+                            document.getElementById("branchInfo").innerHTML += `
+                                <p><strong>Location:</strong> ${branchDetails.location}</p>
+                                <!-- Add more branch details as needed -->
+                            `;
+                        })
+                        .catch(error => console.error("Error fetching branch details:", error));
+                })
+                .catch(error => console.error("Error fetching branch information:", error));
+
+            
+            fetch(`/fetch/${vehicleId}/${userId}`)
+                .then(response => response.text())
+                .then(data => {
+                    
+                    document.getElementById("rentalAgreement").innerHTML = data;
+                })
+                .catch(error => console.error("Error fetching rental agreement:", error));
+        });
+    </script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Check Out Vehicle</title>
+    <style>
+      .detail-input {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Check Out Vehicle</h1>
+    <form id="checkoutForm">
+      <label for="userId">User ID:</label>
+      <input type="text" id="userId" name="userId" required /><br /><br />
+      <label for="vehicleId">Vehicle ID:</label>
+      <input type="text" id="vehicleId" name="vehicleId" required /><br /><br />
+      <label for="returnDate">Return Date:</label>
+      <input
+        type="date"
+        id="returnDate"
+        name="returnDate"
+        required
+      /><br /><br />
+
+      <label for="currentMileage">Current Car Mileage:</label><br />
+      <input
+        type="number"
+        id="currentMileage"
+        name="currentMileage"
+        required
+      /><br /><br />
+
+      <label for="engineLight">Engine Light:</label>
+      <input type="checkbox" id="engineLight" name="engineLight" /><br />
+      <div id="engineLightDetail" class="detail-input">
+        <label for="engineLightDetailInput">Detail:</label><br />
+        <input
+          type="text"
+          id="engineLightDetailInput"
+          name="engineLightDetail"
+        />
+        <br />
+        <label for="engineLightCost">Cost:</label><br />
+        <input type="number" id="engineLightCost" name="engineLightCost" />
+      </div>
+      <br />
+
+      <label for="tireDamage">Tire Damage:</label>
+      <input type="checkbox" id="tireDamage" name="tireDamage" /><br />
+      <div id="tireDamageDetail" class="detail-input">
+        <label for="tireDamageDetailInput">Detail:</label><br />
+        <input type="text" id="tireDamageDetailInput" name="tireDamageDetail" />
+        <br />
+        <label for="tireDamageCost">Cost:</label><br />
+        <input type="number" id="tireDamageCost" name="tireDamageCost" />
+      </div>
+      <br />
+
+      <label for="externalDamage">External Damage:</label>
+      <input type="checkbox" id="externalDamage" name="externalDamage" /><br />
+      <div id="externalDamageDetail" class="detail-input">
+        <label for="externalDamageDetailInput">Detail:</label><br />
+        <input
+          type="text"
+          id="externalDamageDetailInput"
+          name="externalDamageDetail"
+        />
+        <br />
+        <label for="externalDamageCost">Cost:</label><br />
+        <input
+          type="number"
+          id="externalDamageCost"
+          name="externalDamageCost"
+        />
+      </div>
+      <br />
+
+      <label for="internalDamage">Internal Damage:</label>
+      <input type="checkbox" id="internalDamage" name="internalDamage" /><br />
+      <div id="internalDamageDetail" class="detail-input">
+        <label for="internalDamageDetailInput">Detail:</label><br />
+        <input
+          type="text"
+          id="internalDamageDetailInput"
+          name="internalDamageDetail"
+        />
+        <br />
+        <label for="internalDamageCost">Cost:</label><br />
+        <input
+          type="number"
+          id="internalDamageCost"
+          name="internalDamageCost"
+        />
+      </div>
+      <br />
+
+      <br />
+      <input
+        type="text"
+        id="adminSignature"
+        name="adminSignature"
+        required
+      /><label for="adminSignature"><br /><u>Admin Signature</u></label>
+      <br /><br /><br />
+
+      <button type="submit">Check Out</button>
+    </form>
+
+    <br />
+    <div id="result"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function (checkbox) {
+          checkbox.addEventListener("change", function () {
+            const detailId = this.id + "Detail";
+            const detailInput = document.getElementById(detailId);
+            if (this.checked) {
+              detailInput.style.display = "block";
+            } else {
+              detailInput.style.display = "none";
+            }
+          });
+        });
+
+        document
+          .getElementById("checkoutForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            const userId = document.getElementById("userId").value;
+            const vehicleId = document.getElementById("vehicleId").value;
+            const returnDate = document.getElementById("returnDate").value;
+            let additional_cost =
+              (parseInt(document.getElementById("engineLightCost").value) ||
+                0) +
+              (parseInt(document.getElementById("tireDamageCost").value) || 0) +
+              (parseInt(document.getElementById("externalDamageCost").value) ||
+                0) +
+              (parseInt(document.getElementById("internalDamageCost").value) ||
+                0);
+            
+let totalCost;
+            // First fetch to get start time from HasReserved table
+            fetch(`/checkout/${vehicleId}?returnDate=${returnDate}`)
+              .then((response) => response.json())
+              .then((data) => {
+                // Calculate the difference between the start time and return date
+                const startTime = new Date(data.startTime);
+                const returnDate = new Date(data.returnDate);
+                const differenceInMilliseconds = returnDate - startTime;
+                const days = Math.floor(
+                  differenceInMilliseconds / (1000 * 60 * 60 * 24)
+                );
+                const hours = Math.floor(
+                  (differenceInMilliseconds % (1000 * 60 * 60 * 24)) /
+                    (1000 * 60 * 60)
+                );
+
+                // Display the difference to the user
+                document.getElementById("result").innerHTML =
+                  `The vehicle was reserved on ${startTime.toDateString()}.<br>` +
+                  `The difference between the reservation start date and the return date is ${days} days and ${hours} hours.<br>`;
+
+                // Second fetch to get the price from Vehicles table
+                fetch(`/getPrice/${vehicleId}`)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    // Calculate total cost
+                    totalPrice = (days * 24 + hours) * data.price;
+                    totalCost = totalPrice + additional_cost;
+
+                    // Display the price to the user
+                    document.getElementById(
+                      "result"
+                    ).innerHTML += `The price of the vehicle is $${
+                      data.price
+                    } per day.<br>Cost of Renting Vehicle : $${totalPrice} <br> Additional Damage Costs : $${additional_cost} <br> Total Cost : $${
+                      totalCost
+                    }`;
+                    const payNowButton = document.createElement("button");
+            payNowButton.textContent = "Pay Now";
+            payNowButton.id = "payNowButton";
+            payNowButton.addEventListener("click", function () {
+                window.location.href = "payment.html";
+            });
+            document.getElementById("result").appendChild(payNowButton);
+                  })
+                  .catch((error) => console.error("Error:", error));
+              })
+              .catch((error) => console.error("Error:", error));
+
+            
+            
+            fetch("/checkout", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: userId,
+                vehicleId: vehicleId,
+                returnDate: returnDate,
+                cost: totalCost,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // Handle response from server if needed
+                console.log(data);
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          });
+      });
+    </script>
+  </body>
+</html>

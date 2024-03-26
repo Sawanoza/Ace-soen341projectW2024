@@ -47,6 +47,10 @@
         <h1>Payment</h1>
       
         <form class="payment-form" id="paymentForm">
+    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required></p>
+    <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required></p>
+    <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required></p>
+    <input type="text" id="cvv" name="cvv" placeholder="CVV" required></p>
             <button type="submit">Confirm Payment</button>
         </form>
     </div>
@@ -98,7 +102,9 @@
                     alert('Failed to create reservation. Please try again later.');
                 });
             });
+
         });
+            
     </script>
 </body>
 </html>
