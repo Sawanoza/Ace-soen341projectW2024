@@ -31,3 +31,6 @@ You can find:
 
 ## Sprint 2 - Features Video
 - https://drive.google.com/file/d/1xdWBitVMckbpKWeISQlGw0kzZOw9-W5m/view?usp=drive_link
+
+## Sprint 3 - Features Video
+- https://drive.google.com/file/d/1OM4ovHT5GXE7yZsG3MNee3FXyN1NdgC7/view?usp=sharing
