@@ -20,16 +20,16 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-docker@v2
 
-      - name: Start MySQL container
-        run: |
-          docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.36
-        shell: bash
+      #- name: Start MySQL container
+      #  run: |
+      #    docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.36
+      #  shell: bash
 
-      - name: Check MySQL version
-        run: |
-          echo "MySQL Version:"
-          mysql --version
-        shell: bash 
+      #- name: Check MySQL version
+      #  run: |
+      #    echo "MySQL Version:"
+      #    mysql --version
+      #  shell: bash 
 
       - name: Set executable permission
         run: chmod +x node_modules/.bin/jest
