@@ -16,20 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2 
 
-
-# permissions:
-#   contents: read
-
-
-      
-#     steps:      
-#       - name: Checkout code
-#         uses: actions/checkout@v2  
-#         with:
-#           repository:Sawanoza/Ace-soen341projectW2024
- 
-#       - name: Set up Docker
-#         uses: docker/setup-docker@v2
+      - name: Set up Docker
+        uses: docker/setup-docker@v2
 
 #       #- name: Start MySQL container
 #       #  run: |
