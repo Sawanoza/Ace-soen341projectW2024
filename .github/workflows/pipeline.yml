@@ -10,24 +10,12 @@ on:
 
 jobs:
   test:
-    runs-on: self-hosted
-    strategy:
-      matrix:
-        os: [windows-latest]
+    runs-on: ubuntu-latest
+
       
-        
     steps:      
       - name: Checkout code
         uses: actions/checkout@v2
-
-
-
-
-
-
-
-
-        
 
       - name: Set up Docker
         uses: docker/setup-docker@v2
@@ -41,14 +29,7 @@ jobs:
         run: |
           echo "MySQL Version:"
           mysql --version
-        shell: bash
-
-
-
-
-
-
-
+        shell: bash 
 
       - name: Set executable permission
         run: chmod +x node_modules/.bin/jest
