@@ -19,10 +19,9 @@ jobs:
       # - name: Set up Docker
       #   uses: docker/setup-docker@v2
 
-#       #- name: Start MySQL container
-#       #  run: |
-#       #    docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.36
-#       #  shell: bash
+      - name: Start MySQL container
+        run: |
+        shell: bash
 
 #       #- name: Check MySQL version
 #       #  run: |
