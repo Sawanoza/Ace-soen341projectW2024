@@ -16,8 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2 
 
-      - name: Set up Docker
-        uses: docker/setup-docker@v2
+      # - name: Set up Docker
+      #   uses: docker/setup-docker@v2
 
 #       #- name: Start MySQL container
 #       #  run: |
@@ -30,19 +30,19 @@ jobs:
 #       #    mysql --version
 #       #  shell: bash 
 
-#       - name: Set executable permission
-#         run: chmod +x node_modules/.bin/jest
+      - name: Set executable permission
+        run: chmod +x node_modules/.bin/jest
         
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '20.11.1'
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.11.1'
 
-#       - name: Install dependencies
-#         run: npm install
+      - name: Install dependencies
+        run: npm install
 
-#       - name: Run Jest with --runInBand --detectOpenHandles --forceExit
-#         run: npm test
+      - name: Run Jest with --runInBand --detectOpenHandles --forceExit
+        run: npm test
 
 # # Additional features (potentially added)
 # # Linting
