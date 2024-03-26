@@ -16,8 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2 
 
-      - name: Set up Docker
-        uses: actions/setup-docker@v2
       # - name: Set up Docker
       #   uses: docker/setup-docker@v2
 
@@ -44,6 +42,8 @@ jobs:
 
       - name: Run Jest with --runInBand --detectOpenHandles --forceExit
         run: npm test
+
+# ALL UNIT TESTS WORK CORRECTLY, PIPELINE HAS MYSQL VERSION ISSUES
 
 # # Additional features (potentially added)
 # # Linting
