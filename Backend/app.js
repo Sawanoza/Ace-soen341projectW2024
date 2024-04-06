@@ -1054,4 +1054,82 @@ transporter.verify().then(console.log).catch(console.error);
 
     });
   });
+
+});
+
+app.post("/confirmed_reservation", function (req, res) {
+  console.log([
+    req.body.vehicleId,
+    req.body.userId,
+    req.body.startTime,
+    req.body.endTime,
+  ]);
+
+  const qInsert =
+    "INSERT INTO HasReserved (VehicleID, UserID, StartTime, EndTime) VALUES (?, ?, ?, ?)";
+  const valuesInsert = [
+    req.body.vehicleId,
+    req.body.userId,
+    req.body.startTime,
+    req.body.endTime,
+  ];
+
+  const qUpdate = "UPDATE Vehicles SET isAvailable = 0 WHERE VehicleID = ?";
+  const valuesUpdate = [req.body.vehicleId];
+
+  db.query(qInsert, valuesInsert, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+
+    db.query(qUpdate, valuesUpdate, (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send(err);
+      }
+
+      console.log("Reservation created successfully. Vehicle availability updated.");
+
+      // Email sending logic
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        auth: {
+          user: 'mustafa.abulh4@gmail.com',
+          pass: 'xsrs ajej lsae makx',
+        },
+      });
+
+      const mailOptions = {
+        from: 'mustafa.abulh4@gmail.com',
+        to: req.body.email, // Assuming the email is provided in the request body
+        subject: 'Reservation Confirmation',
+        text: `Hello,
+
+Your reservation has been created successfully.
+
+Details:
+- User ID: ${req.body.userId}
+- Vehicle ID: ${req.body.vehicleId}
+- Start Time: ${req.body.startTime}
+- End Time: ${req.body.endTime}
+
+Thank you for using our service.
+
+Best regards,
+Ace Team`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Email could not be sent:', error);
+          res.status(500).send('Email could not be sent');
+        } else {
+          console.log('Email sent:', info.response);
+          res.status(200).send('Reservation created successfully and email sent.');
+        }
+      });
+    });
+  });
 });

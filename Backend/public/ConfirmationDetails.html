@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .reservation {
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Confirmation Details</h1>
+        <div id="confirmationDetails">
+            <!-- Reservation details will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all reservation details from local storage
+            const allReservations = JSON.parse(localStorage.getItem('allReservations'));
+    
+            // Display reservation details
+            const confirmationDetailsElement = document.getElementById('confirmationDetails');
+            if (allReservations && allReservations.length > 0) {
+                allReservations.forEach((reservation, index) => {
+                    const reservationHTML = `
+                        <div class="reservation">
+                            <h2>Reservation ${index + 1}</h2>
+                            <p>User ID: ${reservation.userId}</p>
+                            <p>Vehicle ID: ${reservation.vehicleId}</p>
+                            <p>Start Time: ${reservation.startTime}</p>
+                            <p>End Time: ${reservation.endTime}</p>
+                        </div>
+                    `;
+                    confirmationDetailsElement.innerHTML += reservationHTML;
+                });
+            } else {
+                // No reservations found
+                confirmationDetailsElement.innerHTML = '<p>No reservations found.</p>';
+            }
+        });
+    </script>
+    
+</body>
+</html>

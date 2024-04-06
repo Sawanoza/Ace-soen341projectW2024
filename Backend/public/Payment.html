@@ -47,16 +47,16 @@
         <h1>Payment</h1>
       
         <form class="payment-form" id="paymentForm">
-    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required></p>
-    <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required></p>
-    <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required></p>
-    <input type="text" id="cvv" name="cvv" placeholder="CVV" required></p>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required><br>
+            <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required><br>
+            <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required><br>
+            <input type="text" id="cvv" name="cvv" placeholder="CVV" required><br>
+            <input type="email" id="email" name="email" placeholder="Email Address" required><br> <!-- New input field for email -->
             <button type="submit">Confirm Payment</button>
         </form>
     </div>
 
     <script>
-        
         document.getElementById('paymentForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const userID = localStorage.getItem('UserID');
@@ -65,24 +65,30 @@
                 return;
             }
 
-           
             const selectedVehicles = JSON.parse(localStorage.getItem(userID));
             if (!selectedVehicles || selectedVehicles.length === 0) {
                 alert('No vehicles selected for reservation.');
                 return;
             }
 
-         
-            selectedVehicles.forEach(vehicle => {
+            const userEmail = document.getElementById('email').value;
+
+            // Array to store reservation data
+            const allReservations = [];
+
+            Promise.all(selectedVehicles.map(vehicle => {
                 const reservationData = {
                     vehicleId: vehicle.vehicleID,
                     userId: userID,
                     startTime: vehicle.startTime,
-                    endTime: vehicle.endTime
+                    endTime: vehicle.endTime,
+                    email: userEmail // Pass the user's email to the reservation data
                 };
 
-               
-                fetch('/create_reservation', {
+                allReservations.push(reservationData); // Push each reservation data to the array
+
+                // Return the fetch promise
+                return fetch('/confirmed_reservation', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -93,18 +99,21 @@
                     if (!response.ok) {
                         throw new Error('Failed to create reservation.');
                     }
-                    
-                    localStorage.removeItem(userID); 
-                    
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('Failed to create reservation. Please try again later.');
                 });
+            }))
+            .then(() => {
+                // Store all reservations in local storage
+                localStorage.setItem('allReservations', JSON.stringify(allReservations));
+                
+                // Redirect to ConfirmationDetails.html after all reservations are successfully created
+                window.location.href = 'ConfirmationDetails.html';
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to create reservation. Please try again later.');
             });
-
         });
-            
     </script>
 </body>
 </html>
+

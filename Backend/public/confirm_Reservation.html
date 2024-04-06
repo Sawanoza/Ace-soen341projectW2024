@@ -134,12 +134,6 @@
                                 selectedVehiclesList.appendChild(listItem);
                                 calculateTotalPrice(vehicle.Price);
                             })
-                            .catch(error => {
-                                console.error(error);
-                                const listItem = document.createElement('li');
-                                listItem.textContent = 'Error: Vehicle details not found.';
-                                selectedVehiclesList.appendChild(listItem);
-                            });
                     });
                 } else {
                     const listItem = document.createElement('li');
