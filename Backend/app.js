@@ -159,6 +159,80 @@ app.get("/check_out", (req, res) => {
   res.sendFile(path.join(__dirname, "public/check_out.html"));
 });
 
+// Newly added 
+
+app.post("/create_usertemp", function (req, res) { //Delete it once the official sign up page is done
+  // Query to fetch the maximum user ID
+  const maxUserIdQuery = "SELECT MAX(UserID) AS maxUserId FROM Users";
+  
+  // Execute the query to get the maximum user ID
+  db.query(maxUserIdQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+
+    // Determine the new user ID
+    const latestUserId = result[0].maxUserId || 0;
+    const newUserId = latestUserId + 1;
+
+    // Insert new user with the generated user ID
+    const insertQuery =
+      "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, password, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  
+    const values = [
+      newUserId,
+      req.body.firstName,
+      req.body.lastName,
+      req.body.contactNo,
+      req.body.email,
+      req.body.password,
+      req.body.address,
+      req.body.isCust,
+      req.body.isAdmin,
+      req.body.isRep,
+    ];
+  
+    // Execute the insert query
+    db.query(insertQuery, values, (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send(err);
+      }
+      res.redirect("/Map.html");
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// The following get methods are used for admins
+
 app.get("/create_vehicles", (req, res) => {
   res.sendFile(path.join(__dirname, "public/create_vehicles.html"));
 });
@@ -182,7 +256,6 @@ app.get("/read_users", (req, res) => {
 app.get("/rent_log", (req, res) => {
   res.sendFile(path.join(__dirname, "public/rental_log.html"));
 });
-
 
 app.get("/rental_logs", (req, res) => {
   const q = "SELECT * FROM RentalLog";
@@ -322,7 +395,7 @@ app.post("/item", function (req, res) {
 // ___________ ADDING DELETE  ___________
 
 //Delete vehicles
-function deleteVehicleById(id, callback) {
+  function deleteVehicleById(id, callback) {
   const deleteBranchVehiclesQuery = `DELETE FROM BranchVehicles WHERE VehicleID = ?`;
   const deleteVehicleQuery = `DELETE FROM Vehicles WHERE VehicleID = ?`;
 
@@ -896,7 +969,6 @@ app.get("/fetch/:VehicleID/:UserID", (req, res) => {
 app.post("/checkout", (req, res) => {
   const { userId, vehicleId, returnDate, cost } = req.body;
 
-  // Perform insertion into RentalLog table
   const insertQuery =
     "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate,RentCost) VALUES (?, ?, ?,?)";
   db.query(
@@ -933,7 +1005,6 @@ app.get("/checkout/:vehicleId", (req, res) => {
         .json({ error: "Vehicle not found or not reserved" });
     }
 
-    // Assuming you have the startTime and returnDate fetched from the database
     const startTime = new Date(data[0].StartTime);
     const endDate = new Date(returnDate);
     const differenceInMilliseconds = endDate - startTime;
@@ -942,7 +1013,6 @@ app.get("/checkout/:vehicleId", (req, res) => {
       (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
 
-    // Respond with the calculated values
     res.json({
       startTime: startTime,
       returnDate: returnDate,
@@ -956,20 +1026,19 @@ app.get("/checkout/:vehicleId", (req, res) => {
 
 app.post('/check_out', (req, res) => {
   console.log("Connected");
-  // Parsing boolean values directly from req.body
   const userId = req.body.userId;
   const vehicleId = req.body.vehicleId;
-  const isDamaged = req.body.isDamaged; // Assuming the client sends a boolean
+  const isDamaged = req.body.isDamaged; 
   const damageDetails = req.body.damageDetails;
   const isStolen = req.body.isStolen;
   const email= req.body.email;
-   // Assuming the client sends a boolean
+   
 
-  // Define constants for late fee and damage fee
-  const LATE_FEE_PER_HOUR = 25; // Example value, adjust as needed
-  const DAMAGE_FEE = 100; // Example value, adjust as needed
+  
+  const LATE_FEE_PER_HOUR = 25; 
+  const DAMAGE_FEE = 100; 
 
-  // 1. Check reservation existence and deletion
+  
   db.query('SELECT * FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, reservations) => {
     if (error) {
       console.error('Database error:', error);
@@ -984,7 +1053,7 @@ app.post('/check_out', (req, res) => {
 
     const reservation = reservations[0];
 
-    // Delete the reservation
+    
     db.query('DELETE FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, result) => {
       if (error) {
         console.error('Error deleting reservation:', error);
@@ -992,7 +1061,7 @@ app.post('/check_out', (req, res) => {
         return;
       }
 
-      // 2. Calculate extra charges, if applicable
+      
       let totalExtraCharges = 0;
       const currentTime = new Date();
       const reservationEndTime = new Date(reservation.EndTime);
@@ -1006,7 +1075,7 @@ app.post('/check_out', (req, res) => {
         totalExtraCharges += DAMAGE_FEE;
       }
 
-      // Omitting email sending for brevity
+     
 
       res.json({ success: true, message: 'Reservation checked out successfully!', extraCharges: totalExtraCharges });
 
@@ -1020,9 +1089,9 @@ app.post('/check_out', (req, res) => {
   },
 });
 const mailOptions = {
-  from: 'mustafa.abulh4@gmail.com', // sender address
-  to: email, // list of receivers
-  subject: 'Checkout Confirmation', // Subject line
+  from: 'mustafa.abulh4@gmail.com', 
+  to: email, 
+  subject: 'Checkout Confirmation', 
   text: `Hello,
 
 Your checkout has been processed successfully.
@@ -1103,7 +1172,7 @@ app.post("/confirmed_reservation", function (req, res) {
 
       const mailOptions = {
         from: 'mustafa.abulh4@gmail.com',
-        to: req.body.email, // Assuming the email is provided in the request body
+        to: req.body.email, 
         subject: 'Reservation Confirmation',
         text: `Hello,
 

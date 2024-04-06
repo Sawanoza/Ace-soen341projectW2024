@@ -40,6 +40,21 @@
         .payment-form button:hover {
             background-color: #45a049;
         }
+        /* Animation for loading spinner */
+        .loading {
+            display: none;
+            margin-top: 20px;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #3498db;
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -51,8 +66,9 @@
             <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required><br>
             <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required><br>
             <input type="text" id="cvv" name="cvv" placeholder="CVV" required><br>
-            <input type="email" id="email" name="email" placeholder="Email Address" required><br> <!-- New input field for email -->
+            <input type="email" id="email" name="email" placeholder="Email Address" required><br>
             <button type="submit">Confirm Payment</button>
+            <div class="loading"></div> <!-- Loading spinner -->
         </form>
     </div>
 
@@ -73,8 +89,10 @@
 
             const userEmail = document.getElementById('email').value;
 
-            // Array to store reservation data
             const allReservations = [];
+
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
 
             Promise.all(selectedVehicles.map(vehicle => {
                 const reservationData = {
@@ -82,12 +100,11 @@
                     userId: userID,
                     startTime: vehicle.startTime,
                     endTime: vehicle.endTime,
-                    email: userEmail // Pass the user's email to the reservation data
+                    email: userEmail 
                 };
 
-                allReservations.push(reservationData); // Push each reservation data to the array
+                allReservations.push(reservationData); 
 
-                // Return the fetch promise
                 return fetch('/confirmed_reservation', {
                     method: 'POST',
                     headers: {
@@ -102,15 +119,16 @@
                 });
             }))
             .then(() => {
-                // Store all reservations in local storage
                 localStorage.setItem('allReservations', JSON.stringify(allReservations));
                 
-                // Redirect to ConfirmationDetails.html after all reservations are successfully created
                 window.location.href = 'ConfirmationDetails.html';
             })
             .catch(error => {
                 console.error(error);
                 alert('Failed to create reservation. Please try again later.');
+            })
+            .finally(() => {
+                loading.style.display = 'none';
             });
         });
     </script>
