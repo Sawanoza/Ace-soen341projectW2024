@@ -32,6 +32,7 @@
     <div id="branchList"></div> 
     <div id="userID"></div> 
     <button id="confirmReservationButton">Confirm Reservation</button> 
+    <button id="logoutButton">Logout</button> 
 
     <script>
         const searchForm = document.getElementById('searchForm');
@@ -40,6 +41,7 @@
         const branchList = document.getElementById('branchList'); 
         const userIDDiv = document.getElementById('userID'); 
         const confirmReservationButton = document.getElementById('confirmReservationButton'); 
+        const logoutButton = document.getElementById('logoutButton'); 
 
         searchForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -116,6 +118,13 @@
         confirmReservationButton.addEventListener('click', function() {
             window.location.href = 'confirm_reservation.html'; 
         });
+
+        // Add event listener for logout button
+        logoutButton.addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = 'LandingPage.html';
+        });
+
     </script>
 
 </body>

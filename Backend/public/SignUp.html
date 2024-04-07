@@ -1,65 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="style.css" />
     <title>User Form</title>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <h1>User Registration</h1>
+        <h1>User Registration</h1>
     </header>
-    <form action="/create_usertemp" method="POST">
-      <fieldset>
+    <form action="/create_usertemp" method="POST" id="userForm">
+        <fieldset>
+            <label for="firstName">First Name:</label><br />
+            <input type="text" id="firstName" name="firstName" required /><br />
 
-        <label for="firstName">First Name:</label><br />
-        <input type="text" id="firstName" name="firstName" required /><br />
+            <label for="lastName">Last Name:</label><br />
+            <input type="text" id="lastName" name="lastName" required /><br />
 
-        <label for="lastName">Last Name:</label><br />
-        <input type="text" id="lastName" name="lastName" required /><br />
+            <label for="contactNo">Contact No:</label><br />
+            <input type="tel" id="contactNo" name="contactNo" required /><br />
 
-        <label for="contactNo">Contact No:</label><br />
-        <input type="tel" id="contactNo" name="contactNo" required /><br />
+            <label for="email">Email:</label><br />
+            <input type="text" id="email" name="email" required /><br />
 
-        <label for="email">Email:</label><br />
-        <input type="email" id="email" name="email" required /><br />
+            <label for="password">Password:</label><br />
+            <input type="password" id="password" name="password" required /><br /> 
 
-        <label for="password">Password:</label><br />
-        <input type="password" id="password" name="password" required /><br /> 
+            <label for="address">Address:</label><br />
+            <input type="text" id="address" name="address" required /><br />
 
-        <label for="address">Address:</label><br />
-        <input type="text" id="address" name="address" required /><br />
+            <!-- Hidden fields for isCust, isAdmin, and isRep -->
+            <input type="hidden" id="isCust" name="isCust" value="1" />
+            <input type="hidden" id="isAdmin" name="isAdmin" value="0" />
+            <input type="hidden" id="isRep" name="isRep" value="0" />
 
-        <label for="isCust">Is Customer:</label><br />
-        <select id="isCust" name="isCust" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <label for="isAdmin">Is Admin:</label><br />
-        <select id="isAdmin" name="isAdmin" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <label for="isRep">Is Representative:</label><br />
-        <select id="isRep" name="isRep" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <br /><br />
-        <button type="reset">Reset</button>
-        <button type="submit">Submit</button>
-        <button type="button" onclick="window.location.href='Map.html'">View Table</button>
-      </fieldset>
+            <br /><br />
+            <button type="reset">Reset</button>
+            <button type="submit">Submit</button>
+        </fieldset>
     </form>
-  </body>
+    
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            const emailInput = document.getElementById('email');
+            const isAdminInput = document.getElementById('isAdmin');
+            const isCustInput = document.getElementById('isCust');
+            const isRepInput = document.getElementById('isRep');
+
+            // Check if the input is a valid email address
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+
+            // Update isCust, isAdmin, and isRep based on email validation
+            if (isEmail) {
+                isCustInput.value = '1';
+                isAdminInput.value = '0';
+                isRepInput.value = '0';
+
+                // Retrieve user ID by email using GET request
+                const url = '/getUserIdByEmail/' + encodeURIComponent(emailInput.value.trim());
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Store user ID locally
+                        localStorage.setItem('UserID', data.userId);
+                        
+                        // Proceed with form submission after storing UserID
+                        document.getElementById('userForm').submit();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                isCustInput.value = '0';
+                isAdminInput.value = '0';
+                isRepInput.value = '1';
+
+                // Proceed with form submission without storing UserID
+                document.getElementById('userForm').submit();
+            }
+        });
+    </script>
+</body>
 </html>
-
-
-
-
-
 
 

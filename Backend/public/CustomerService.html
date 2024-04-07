@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Customer Service Dashboard</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#">Customer Inquiries</a></li>
+            <li><a href="#">Customer Data</a></li>
+            <li><a href="#">Support Tickets</a></li>
+            <li><a id = logoutLink href="#">Logout</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="customerInquiries">
+            <h2>Customer Inquiries</h2>
+            <!-- Display customer inquiries here -->
+        </section>
+
+        <section id="customerData">
+            <h2>Customer Data</h2>
+            <!-- Display customer data here -->
+        </section>
+
+        <section id="supportTickets">
+            <h2>Support Tickets</h2>
+            <!-- Display support tickets here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Customer Service Dashboard</p>
+    </footer>
+    <script>
+        // Get the logout link element
+        const logoutLink = document.getElementById('logoutLink');
+
+        // Add click event listener to the logout link
+        logoutLink.addEventListener('click', function(event) {
+            // Prevent the default action of clicking a link
+            event.preventDefault();
+            
+            // Perform any necessary logout actions (clearing session data, etc.)
+            // For demonstration purposes, we will simply redirect to LandingPage.html
+            window.location.href = 'LandingPage.html';
+        });
+    </script>
+</body>
+</html>

@@ -39,15 +39,10 @@
             <!-- RentalLog data will be inserted here -->
         </tbody>
     </table>
-    <div class="button-container">
-        <button id="addRentalLogButton">Add RentalLog</button>
-        <button id="updateRentalLogButton">Update RentalLogs</button>
-    </div>
     <script>
         function goToUpdateRentalLogs() {
             window.location.href = '/update_rental_logs.html';
         }
-
         // Fetch RentalLog data and populate the table
         window.onload = function () {
             fetch("/rental_logs")
