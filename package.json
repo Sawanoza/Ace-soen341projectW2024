@@ -1,10 +1,4 @@
 {
-<<<<<<< HEAD
-  "dependencies": {
-    "nodemon": "^3.1.0"
-  }
-}
-=======
   "name": "ace-soen341projectw2024",
   "version": "1.0.0",
   "description": "Project for the SOEN341 course at Concordia University Canada for the Winter 2024 semester",
@@ -26,4 +20,3 @@
     "supertest": "^6.3.4"
   }
 }
->>>>>>> main-testing
