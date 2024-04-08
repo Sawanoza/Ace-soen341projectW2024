@@ -219,12 +219,7 @@ app.post("/create_usertemp", function (req, res) {
         console.error(err);
         return res.send(err);
       }
-      
-      if (req.body.isCust === '1') {
-        res.redirect("/Map.html");
-      } else {
-        res.redirect("/CustomerService.html");
-      }
+
     });
   });
 });
@@ -304,44 +299,7 @@ app.post("/create_user", function (req, res) {
   });
 });
 
-app.post("/create_usertemp", function (req, res) { //Delete it once the official sign up page is done
-  console.log([
-    req.body.userId,
-    req.body.firstName,
-    req.body.lastName,
-    req.body.contactNo,
-    req.body.email,
-    req.body.password,
-    req.body.address,
-    req.body.isCust,
-    req.body.isAdmin,
-    req.body.isRep,
-  ]);
 
-  const q =
-    "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, password, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-  const values = [
-    req.body.userId,
-    req.body.firstName,
-    req.body.lastName,
-    req.body.contactNo,
-    req.body.email,
-    req.body.password,
-    req.body.address,
-    req.body.isCust,
-    req.body.isAdmin,
-    req.body.isRep,
-  ];
-
-  db.query(q, values, (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.send(err);
-    }
-    res.redirect("/Map.html");
-  });
-});
 
 app.post("/item", function (req, res) {
   console.log([
@@ -1203,9 +1161,8 @@ app.post("/confirmed_reservation", function (req, res) {
             subject: 'Reservation Confirmation',
             text: `Hello,
 
-Your reservation has been created successfully.
+Your Reservation Details:
 
-Details:
 - User ID: ${req.body.userId}
 - Vehicle ID: ${req.body.vehicleId}
 - Start Time: ${req.body.startTime}
