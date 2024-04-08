@@ -28,37 +28,17 @@ const Footer = () => {
                 <FooterLinksWrapper>
                     <FooterLinkItems>
                         <FooterLinkTitle>About us</FooterLinkTitle>
-                            <FooterLink to="/signin">How it works</FooterLink>
-                            <FooterLink to="/signin">Testimonials</FooterLink>
-                            <FooterLink to="/signin">Careers</FooterLink>
-                            <FooterLink to="/signin">Investors</FooterLink>
-                            <FooterLink to="/signin">Terms of Service</FooterLink>
+                            <FooterLink to="/">How it works</FooterLink>
+                            <FooterLink to="/">Testimonials</FooterLink>
+                            <FooterLink to="/">Investors</FooterLink>
+                            <FooterLink to="/">Terms of Service</FooterLink>
                     </FooterLinkItems>
                     <FooterLinkItems>
                         <FooterLinkTitle>Contact Us</FooterLinkTitle>
-                            <FooterLink to="/signin">Contact</FooterLink>
-                            <FooterLink to="/signin">Support</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                    </FooterLinkItems>
-                </FooterLinksWrapper>
-                <FooterLinksWrapper>
-                    <FooterLinkItems>
-                        <FooterLinkTitle>Section 3</FooterLinkTitle>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                    </FooterLinkItems>
-                    <FooterLinkItems>
-                        <FooterLinkTitle>Section 4</FooterLinkTitle>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
-                            <FooterLink to="/signin">Title</FooterLink>
+                            <FooterLink to="/">Contact</FooterLink>
+                            <FooterLink to="/">Support</FooterLink>
+                            <FooterLink to="//github.com/Sawanoza/Ace-soen341projectW2024" target="_blank">Github</FooterLink>
+                            <FooterLink to="/">Sponsorships</FooterLink>
                     </FooterLinkItems>
                 </FooterLinksWrapper>
             </FooterLinksContainer>
