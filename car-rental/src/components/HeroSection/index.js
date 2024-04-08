@@ -19,7 +19,7 @@ const HeroSection = () => {
             <HeroH1>Car Renting Made Easy</HeroH1>
             <HeroP>Sign up for a new account today!</HeroP>
             <HeroBtnWrapper>
-                <Button to="signup" onMouseEnter={onHover} onMouseLeave={onHover} primary="true" dark="true" smooth={true} duration={500} spy={true} exact='true' offset={-80}>
+                <Button to="/signin" onMouseEnter={onHover} onMouseLeave={onHover} primary="true" dark="true" smooth={true} duration={500} spy={true} exact='true' offset={-80} style={{textDecoration: 'none'}}>
                     Get Started {hover ? <ArrowForward /> : <ArrowRight />}
                 </Button>
             </HeroBtnWrapper>
