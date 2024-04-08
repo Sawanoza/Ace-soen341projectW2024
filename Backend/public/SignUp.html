@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>User Form</title>
+  </head>
+  <body>
+    <header>
+      <h1>User Registration</h1>
+    </header>
+    <form action="/create_usertemp" method="POST">
+      <fieldset>
+        <label for="userId">User ID:</label><br />
+        <input type="text" id="userId" name="userId" required /><br />
+
+        <label for="firstName">First Name:</label><br />
+        <input type="text" id="firstName" name="firstName" required /><br />
+
+        <label for="lastName">Last Name:</label><br />
+        <input type="text" id="lastName" name="lastName" required /><br />
+
+        <label for="contactNo">Contact No:</label><br />
+        <input type="tel" id="contactNo" name="contactNo" required /><br />
+
+        <label for="email">Email:</label><br />
+        <input type="email" id="email" name="email" required /><br />
+
+        <label for="password">Password:</label><br />
+        <input type="password" id="password" name="password" required /><br /> <!-- Creating password, this is a temporary page -->
+
+        <label for="address">Address:</label><br />
+        <input type="text" id="address" name="address" required /><br />
+
+        <label for="isCust">Is Customer:</label><br />
+        <select id="isCust" name="isCust" required>
+          <option value="0">False</option>
+          <option value="1">True</option>
+        </select><br />
+
+        <label for="isAdmin">Is Admin:</label><br />
+        <select id="isAdmin" name="isAdmin" required>
+          <option value="0">False</option>
+          <option value="1">True</option>
+        </select><br />
+
+        <label for="isRep">Is Representative:</label><br />
+        <select id="isRep" name="isRep" required>
+          <option value="0">False</option>
+          <option value="1">True</option>
+        </select><br />
+
+        <br /><br />
+        <button type="reset">Reset</button>
+        <button type="submit">Submit</button>
+        <button type="button" onclick="window.location.href='Map.html'">View Table</button>
+      </fieldset>
+    </form>
+  </body>
+</html>
+
+
+
+
+
+
+

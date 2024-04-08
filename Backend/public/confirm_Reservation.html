@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Reservation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        #userInfo {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #selectedVehicles {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .vehicle-item {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .vehicle-details {
+            margin: 10px 0;
+        }
+        .vehicle-details strong {
+            font-weight: bold;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        #totalPrice {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+        }
+        #taxes {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .reservation-form {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .reservation-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reservation-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Confirm Reservation</h1>
+        <div id="userInfo"></div>
+        <ul id="selectedVehicles"></ul>
+        <div id="totalPrice"></div>
+        <div id="taxes"></div>
+        <form class="reservation-form" id="reservationForm">
+            <button type="submit">Proceed to payment</button>
+        </p>
+            <button type="button" id="cancelButton">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        function displayReservationDetails() {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                const storedVehicles = JSON.parse(localStorage.getItem(userID)) || [];
+                const userInfoDiv = document.getElementById('userInfo');
+                userInfoDiv.textContent = `User ID: ${userID}`;
+
+                const selectedVehiclesList = document.getElementById('selectedVehicles');
+                if (storedVehicles.length > 0) {
+                    storedVehicles.forEach(vehicleID => {
+                        fetch(`/vehicles/${vehicleID}`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Failed to fetch vehicle details.');
+                                }
+                                return response.json();
+                            })
+                            .then(vehicle => {
+                                const listItem = document.createElement('li');
+                                listItem.classList.add('vehicle-item');
+                                listItem.setAttribute('data-vehicle-id', vehicle.VehicleID);
+                                listItem.innerHTML = `
+                                    <div class="vehicle-details">
+                                        <strong>Vehicle ID:</strong> ${vehicle.VehicleID}<br>
+                                        <strong>Brand:</strong> ${vehicle.Brand}<br>
+                                        <strong>Name:</strong> ${vehicle.Name}<br>
+                                        <strong>Price:</strong> $${vehicle.Price}<br>
+                                        <label for="${vehicle.VehicleID}-startTime">Start Time:</label>
+                                        <input type="datetime-local" id="${vehicle.VehicleID}-startTime" name="${vehicle.VehicleID}-startTime" required><br>
+                                        <label for="${vehicle.VehicleID}-endTime">End Time:</label>
+                                        <input type="datetime-local" id="${vehicle.VehicleID}-endTime" name="${vehicle.VehicleID}-endTime" required><br>
+                                    </div>
+                                    <div class="delete-button" onclick="deleteVehicle('${vehicle.VehicleID}')"> Remove </div>
+                                `;
+                                selectedVehiclesList.appendChild(listItem);
+                                calculateTotalPrice(vehicle.Price);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                const listItem = document.createElement('li');
+                                listItem.textContent = 'Error: Vehicle details not found.';
+                                selectedVehiclesList.appendChild(listItem);
+                            });
+                    });
+                } else {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = 'No vehicles selected.';
+                    selectedVehiclesList.appendChild(listItem);
+                }
+            } else {
+                alert('User ID not found.');
+            }
+        }
+
+        function deleteVehicle(vehicleID) {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                let storedVehicles = JSON.parse(localStorage.getItem(userID)) || [];
+                storedVehicles = storedVehicles.filter(id => id !== vehicleID);
+                localStorage.setItem(userID, JSON.stringify(storedVehicles));
+                location.reload();
+            }
+        }
+
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+          
+                localStorage.removeItem(userID);
+          
+                window.location.href = 'Map.html';
+            }
+        });
+
+
+        function calculateTotalPrice(price) {
+            const GST = 0.05;
+            const QST = 0.09975;
+            const totalTax = GST + QST;
+            const totalPrice = price * (1 + totalTax);
+            const totalTaxAmount = totalPrice - price;
+            const totalPriceDiv = document.getElementById('totalPrice');
+            const taxesDiv = document.getElementById('taxes');
+            totalPriceDiv.textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+            taxesDiv.textContent = `Taxes (GST + QST): $${totalTaxAmount.toFixed(2)}`;
+        }
+
+        displayReservationDetails();
+
+        const reservationForm = document.getElementById('reservationForm');
+        reservationForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+            const selectedVehicles = [];
+            const vehicleItems = document.querySelectorAll('.vehicle-item');
+            vehicleItems.forEach(item => {
+                const vehicleID = item.getAttribute('data-vehicle-id');
+                const startTime = document.getElementById(`${vehicleID}-startTime`).value;
+                const endTime = document.getElementById(`${vehicleID}-endTime`).value;
+                selectedVehicles.push({
+                    vehicleID,
+                    startTime,
+                    endTime
+                });
+            });
+
+            localStorage.setItem(userID, JSON.stringify(selectedVehicles));
+
+            
+            window.location.href = 'Payment.html';
+        });
+    </script>
+</body>
+</html>

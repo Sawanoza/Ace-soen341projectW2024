@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 
+
+      # - name: Set up Docker
+      #   uses: docker/setup-docker@v2
+
+      # - name: Start MySQL container
+      #   run: |
+      #   shell: bash
+
+#       #- name: Check MySQL version
+#       #  run: |
+#       #    echo "MySQL Version:"
+#       #    mysql --version
+#       #  shell: bash 
+
+      - name: Set executable permission
+        run: chmod +x node_modules/.bin/jest
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.11.1'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Jest with --runInBand --detectOpenHandles --forceExit
+        run: npm test
+
+# ALL UNIT TESTS WORK CORRECTLY, PIPELINE HAS MYSQL VERSION ISSUES
+
+# # Additional features (potentially added)
+# # Linting
+# # Code coverage tools to ensure that a certain percentage of code is covered by tests
+# # Integration tests to validate interactions between different parts of the system
+# # Building and deploying the application? xxx

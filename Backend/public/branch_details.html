@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Details</title>
+</head>
+<body>
+    <h1>Branch Details</h1>
+    <div id="branchDetails"></div>
+
+    <form id="reservationForm">
+        <h2>Select Vehicles</h2>
+        <div id="vehicleList"></div>
+        
+        <button type="submit">Confirm</button>
+    </form>
+
+    <script>
+      
+        function getQueryParam(parameterName) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(parameterName);
+        }
+
+       
+        const branchID = getQueryParam('id');
+
+    
+        fetch(`/branches/${branchID}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Branch ID not found.');
+                }
+                return response.json();
+            })
+            .then(branch => {
+              
+                const branchDetailsElement = document.getElementById('branchDetails');
+                branchDetailsElement.innerHTML = `
+                    <p>Branch ID: ${branch.id}</p>
+                    <p>Location: ${branch.location}</p>
+                    <h2>Vehicles:</h2>
+                    <ul id="vehicleList">
+                        ${branch.vehicles.map(vehicle => `
+                            <li>
+                                <input type="checkbox" id="vehicle${vehicle.VehicleID}" value="${vehicle.VehicleID}" ${vehicle.IsAvailable ? '' : 'disabled'}>
+                                <label for="vehicle${vehicle.VehicleID}">${vehicle.Name} - ${vehicle.Brand}</label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('branchDetails').textContent = 'Branch ID not found.';
+            });
+
+       
+        document.getElementById('reservationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            
+            const selectedVehicles = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+          
+            if (selectedVehicles.length === 0) {
+                alert('Please select at least one available vehicle.');
+                return;
+            }
+
+            
+            const userID = localStorage.getItem('UserID');
+            if (userID) {
+                const storedVehicles = JSON.parse(localStorage.getItem(userID)) || [];
+                const updatedVehicles = [...storedVehicles, ...selectedVehicles];
+                localStorage.setItem(userID, JSON.stringify(updatedVehicles));
+                
+                
+                window.location.href = '/Map.html';
+            } else {
+                alert('User ID not found.');
+            }
+        });
+    </script>
+</body>
+</html>
+
