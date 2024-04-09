@@ -4,9 +4,6 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import Home from './pages';
 import SigninPage from "./pages/signin"
 
-//temporary
-import Login from "./components/Signin";
-
 function App() {
   return (
     <Router>

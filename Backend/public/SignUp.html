@@ -1,67 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <title>User Form</title>
-  </head>
-  <body>
-    <header>
-      <h1>User Registration</h1>
-    </header>
-    <form action="/create_usertemp" method="POST">
-      <fieldset>
-        <label for="userId">User ID:</label><br />
-        <input type="text" id="userId" name="userId" required /><br />
-
-        <label for="firstName">First Name:</label><br />
-        <input type="text" id="firstName" name="firstName" required /><br />
-
-        <label for="lastName">Last Name:</label><br />
-        <input type="text" id="lastName" name="lastName" required /><br />
-
-        <label for="contactNo">Contact No:</label><br />
-        <input type="tel" id="contactNo" name="contactNo" required /><br />
-
-        <label for="email">Email:</label><br />
-        <input type="email" id="email" name="email" required /><br />
-
-        <label for="password">Password:</label><br />
-        <input type="password" id="password" name="password" required /><br /> <!-- Creating password, this is a temporary page -->
-
-        <label for="address">Address:</label><br />
-        <input type="text" id="address" name="address" required /><br />
-
-        <label for="isCust">Is Customer:</label><br />
-        <select id="isCust" name="isCust" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <label for="isAdmin">Is Admin:</label><br />
-        <select id="isAdmin" name="isAdmin" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <label for="isRep">Is Representative:</label><br />
-        <select id="isRep" name="isRep" required>
-          <option value="0">False</option>
-          <option value="1">True</option>
-        </select><br />
-
-        <br /><br />
-        <button type="reset">Reset</button>
-        <button type="submit">Submit</button>
-        <button type="button" onclick="window.location.href='Map.html'">View Table</button>
-      </fieldset>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Signup</title>
+    <style>
+        #reserveNowButton {
+            display: none; /* Hide the button */
+        }
+    </style>
+</head>
+<body>
+    <h1>User Signup</h1>
+    <form id="signupForm" action="/create_usertemp" method="POST">
+        <label for="firstName">First Name:</label><br>
+        <input type="text" id="firstName" name="firstName" required><br>
+        
+        <label for="lastName">Last Name:</label><br>
+        <input type="text" id="lastName" name="lastName" required><br>
+        
+        <label for="contactNo">Contact No:</label><br>
+        <input type="tel" id="contactNo" name="contactNo" required><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br>
+        
+        <label for="address">Address:</label><br>
+        <input type="text" id="address" name="address" required><br>
+        
+        <!-- Hidden fields for user role -->
+        <input type="hidden" id="isCust" name="isCust" value="1">
+        <input type="hidden" id="isAdmin" name="isAdmin" value="0">
+        <input type="hidden" id="isRep" name="isRep" value="0">
+        
+        <br><br>
+        <button type="submit" id="signupButton">Sign Up</button>
+        <button type="button" id="reserveNowButton">Reserve Now</button>
     </form>
-  </body>
+    <script>
+        document.getElementById('signupButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+            
+            // Get the email input value
+            const email = document.getElementById('email').value;
+    
+            // Check if input is a valid email
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    
+            if (!isEmailValid) {
+                // If email is not valid, display an error message and block form submission
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Submit the form
+            document.getElementById('signupForm').submit();
+            
+            // Automatically click the Reserve Now button after a short delay
+            setTimeout(function() {
+                document.getElementById('reserveNowButton').click();
+            }, 150);
+        });
+    
+        document.getElementById('reserveNowButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default button behavior
+            
+            // Retrieve email from the form
+            const email = document.getElementById('email').value;
+    
+            // Make a request to the server to get UserID by email
+            fetch(`/getUserIDbyEmail/${email}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Store the retrieved UserID locally
+                    localStorage.setItem('UserID', data.userId);
+    
+                    // Redirect to Map.html after retrieving UserID
+                    window.location.href = 'Map.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Please create your account first');
+                });
+        });
+    </script>
+    
+    
+</body>
 </html>
-
-
-
-
-
-
-

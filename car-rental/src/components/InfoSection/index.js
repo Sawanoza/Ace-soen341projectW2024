@@ -15,7 +15,7 @@ const InfoSection = ({lightBg, id, imgStart, topLine, lightText, headline, darkT
                         <Subtitle darkText={darkText}>{description}</Subtitle>
                         <BtnWrap>
                             <Button 
-                            to="/signin" 
+                            to="http://localhost:8800/SignUp.html" 
                             smooth={true} 
                             duration={500} 
                             spy={true} 

@@ -17,9 +17,6 @@
         th {
             background-color: #f2f2f2;
         }
-        .button-container {
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -30,24 +27,16 @@
                 <th>SNo</th>
                 <th>VehicleID</th>
                 <th>UserID</th>
+                <th>Start Date</th>
                 <th>Return Date</th>
                 <th>Rent Cost</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             <!-- RentalLog data will be inserted here -->
         </tbody>
     </table>
-    <div class="button-container">
-        <button id="addRentalLogButton">Add RentalLog</button>
-        <button id="updateRentalLogButton">Update RentalLogs</button>
-    </div>
     <script>
-        function goToUpdateRentalLogs() {
-            window.location.href = '/update_rental_logs.html';
-        }
-
         // Fetch RentalLog data and populate the table
         window.onload = function () {
             fetch("/rental_logs")
@@ -56,15 +45,17 @@
                     const tableBody = document.querySelector("#rentalLogTable tbody");
                     data.forEach((log) => {
                         const row = document.createElement("tr");
+                        // Format start date if it's a Date object
+                        const startDate = log.StartDate instanceof Date ? log.StartDate.toLocaleDateString() : log.StartDate;
+                        // Format return date if it's a Date object
+                        const returnDate = log.ReturnDate instanceof Date ? log.ReturnDate.toLocaleDateString() : log.ReturnDate;
                         row.innerHTML = `
                             <td>${log.SNo}</td>
                             <td>${log.VehicleID}</td>
                             <td>${log.UserID}</td>
-                            <td>${log.ReturnDate}</td>
+                            <td>${startDate}</td>
+                            <td>${returnDate}</td>
                             <td>${log.RentCost}</td>
-                            <td>
-                                <button onclick="deleteRentalLog(${log.SNo}, this.parentNode.parentNode)">Delete</button>
-                            </td>
                         `;
                         tableBody.appendChild(row);
                     });
@@ -72,32 +63,7 @@
                 .catch((error) =>
                     console.error("Error fetching RentalLog data:", error)
                 );
-
-            const addRentalLogButton = document.getElementById("addRentalLogButton");
-            addRentalLogButton.addEventListener("click", function () {
-                window.location.href = "/add_rental_log";
-            });
-
-            const updateRentalLogButton = document.getElementById("updateRentalLogButton");
-            updateRentalLogButton.addEventListener("click", goToUpdateRentalLogs);
         };
-
-        function deleteRentalLog(sno, row) {
-            if (confirm("Are you sure you want to delete this RentalLog?")) {
-                fetch(`http://localhost:8800/rental_logs/${sno}`, {
-                    method: 'DELETE'
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log(`RentalLog with SNo ${sno} deleted successfully`);
-                            row.remove();
-                        } else {
-                            console.error('Error deleting RentalLog:', response.statusText);
-                        }
-                    })
-                    .catch(error => console.error('Error deleting RentalLog:', error));
-            }
-        }
     </script>
 </body>
 </html>
