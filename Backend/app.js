@@ -158,6 +158,30 @@ app.get("/check_out", (req, res) => {
   res.sendFile(path.join(__dirname, "public/check_out.html"));
 });
 
+app.get("/getEmailByUserID/:userID", function (req, res) {
+  const userID = req.params.userID; // Get the userID from the route parameter
+  
+  // Query to fetch the Email based on the provided UserID
+  const getEmailQuery = "SELECT Email FROM Users WHERE UserID = ?";
+  
+  // Execute the query
+  db.query(getEmailQuery, [userID], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    // Check if a user with the provided UserID exists
+    if (result.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Retrieve and send the Email in the response
+    const email = result[0].Email;
+    res.status(200).json({ email });
+  });
+});
+
 app.get("/getUserIdByEmail/:email", function (req, res) {
   const email = req.params.email; // Get the email from the route parameter
   

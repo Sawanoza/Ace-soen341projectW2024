@@ -40,22 +40,34 @@
         <button type="submit" id="signupButton">Sign Up</button>
         <button type="button" id="reserveNowButton">Reserve Now</button>
     </form>
-
     <script>
         document.getElementById('signupButton').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default form submission behavior
+            
+            // Get the email input value
+            const email = document.getElementById('email').value;
+    
+            // Check if input is a valid email
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    
+            if (!isEmailValid) {
+                // If email is not valid, display an error message and block form submission
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
             // Submit the form
             document.getElementById('signupForm').submit();
             
-            // Automatically click the Reserve Now button after 2 seconds
+            // Automatically click the Reserve Now button after a short delay
             setTimeout(function() {
                 document.getElementById('reserveNowButton').click();
-            }, 50);
+            }, 150);
         });
     
         document.getElementById('reserveNowButton').addEventListener('click', function(event) {
-            // Prevent the default button behavior
-            event.preventDefault(); // Prevent default form submission behavior
+            event.preventDefault(); // Prevent default button behavior
+            
             // Retrieve email from the form
             const email = document.getElementById('email').value;
     
@@ -80,6 +92,7 @@
                 });
         });
     </script>
+    
     
 </body>
 </html>

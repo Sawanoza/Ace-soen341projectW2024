@@ -91,7 +91,7 @@
         <div id="taxes"></div>
         <form class="reservation-form" id="reservationForm">
             <button type="submit">Proceed to payment</button>
-        </p>
+            <p>
             <button type="button" id="cancelButton">Cancel</button>
         </form>
     </div>
@@ -105,6 +105,8 @@
                 userInfoDiv.textContent = `User ID: ${userID}`;
 
                 const selectedVehiclesList = document.getElementById('selectedVehicles');
+                let totalPrice = 0; // Variable to store the total price
+
                 if (storedVehicles.length > 0) {
                     storedVehicles.forEach(vehicleID => {
                         fetch(`/vehicles/${vehicleID}`)
@@ -132,13 +134,15 @@
                                     <div class="delete-button" onclick="deleteVehicle('${vehicle.VehicleID}')"> Remove </div>
                                 `;
                                 selectedVehiclesList.appendChild(listItem);
-                                calculateTotalPrice(vehicle.Price);
-                            })
+                                totalPrice += vehicle.Price; // Update total price
+                                calculateTotalPrice(totalPrice); // Call calculateTotalPrice with updated total price
+                            });
                     });
                 } else {
                     const listItem = document.createElement('li');
                     listItem.textContent = 'No vehicles selected.';
                     selectedVehiclesList.appendChild(listItem);
+                    calculateTotalPrice(totalPrice); // Call calculateTotalPrice with 0 price
                 }
             } else {
                 alert('User ID not found.');
@@ -158,13 +162,10 @@
         document.getElementById('cancelButton').addEventListener('click', function() {
             const userID = localStorage.getItem('UserID');
             if (userID) {
-          
                 localStorage.removeItem(userID);
-          
                 window.location.href = 'Map.html';
             }
         });
-
 
         function calculateTotalPrice(price) {
             const GST = 0.05;
@@ -203,8 +204,6 @@
             });
 
             localStorage.setItem(userID, JSON.stringify(selectedVehicles));
-
-            
             window.location.href = 'Payment.html';
         });
     </script>

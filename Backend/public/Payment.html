@@ -30,6 +30,7 @@
             align-items: center;
         }
         .payment-form button {
+            margin-top: 20px;
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
@@ -65,13 +66,34 @@
             <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required maxlength="19"><br>
             <input type="text" id="cvv" name="cvv" placeholder="CVV" required maxlength="3"><br>
             <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required maxlength="7"><br>            
-            <input type="email" id="email" name="email" placeholder="Email Address" required><br>
+            <input type="email" id="email" name="email" placeholder="Email Address" required readonly style="display: none;"><br>
             <button type="submit">Confirm Payment</button>
             <div class="loading"></div> <!-- Loading spinner -->
         </form>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+            // Fetch user's email address using the provided method
+            fetch(`/getEmailByUserID/${userID}`)
+                .then(response => response.json())
+                .then(data => {
+                    const userEmail = data.email;
+                    document.getElementById('email').value = userEmail; // Fill email input
+                    console.log("User's email:", userEmail); // Display user's email
+                })
+                .catch(error => {
+                    console.error('Failed to fetch user email:', error);
+                    alert('Failed to fetch user email. Please try again later.');
+                });
+        });
+
         document.getElementById('paymentForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const userID = localStorage.getItem('UserID');
@@ -133,4 +155,3 @@
     </script>
 </body>
 </html>
-

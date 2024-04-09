@@ -24,16 +24,19 @@
     <script>
         document.getElementById('signInForm').addEventListener('submit', function(event) {
             event.preventDefault(); 
-
+    
             // Get the email input value
             const emailOrEmployeeNumber = document.getElementById('email').value;
-
+    
             // Check if input is a valid email
             const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrEmployeeNumber);
-
+    
+            // Check if input consists only of numbers
+            const isNumeric = /^\d+$/.test(emailOrEmployeeNumber);
+    
             // Prepare form data
             const formData = new FormData(this);
-
+    
             // Fetch sign-in request
             fetch('/signin', {
                 method: 'POST',
@@ -58,8 +61,11 @@
                 
                 if (isEmail) {
                     window.location.href = '/Map.html'; 
-                } else {
+                } else if (isNumeric) {
                     window.location.href = '/CustomerService.html'; 
+                } else {
+                    document.getElementById('errorMessage').textContent = 'Invalid email or password. Please try again.';
+                    document.getElementById('errorMessage').style.display = 'block';
                 }
             })
             .catch(error => {
@@ -69,6 +75,7 @@
             });
         });
     </script>
+    
 </body>
 </html>
 
