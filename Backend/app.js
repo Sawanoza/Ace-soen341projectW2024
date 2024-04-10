@@ -950,7 +950,7 @@ app.post("/checkout", (req, res) => {
   const { userId, vehicleId, returnDate, cost } = req.body;
 
   const insertQuery =
-    "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate,RentCost) VALUES (?, ?, ?,?)";
+    "INSERT INTO RentalLog (VehicleID, UserID, StartDate, ReturnDate, RentCost) VALUES (?, ?, ?, ?, ?)";
   db.query(
     insertQuery,
     [vehicleId, userId, returnDate, cost],
@@ -1153,10 +1153,11 @@ app.post("/confirmed_reservation", function (req, res) {
 
         // Insert into RentalLog table
         const qRentalLog =
-          "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate, RentCost) VALUES (?, ?, ?, ?)";
+          "INSERT INTO RentalLog (VehicleID, UserID, StartDate, ReturnDate, RentCost) VALUES (?, ?, ?, ?, ?)";
         const valuesRentalLog = [
           req.body.vehicleId,
           req.body.userId,
+          req.body.startTime,
           req.body.endTime,
           totalPrice,
         ];
