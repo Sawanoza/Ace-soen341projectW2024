@@ -30,6 +30,7 @@
             align-items: center;
         }
         .payment-form button {
+            margin-top: 20px;
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
@@ -40,6 +41,21 @@
         .payment-form button:hover {
             background-color: #45a049;
         }
+        /* Animation for loading spinner */
+        .loading {
+            display: none;
+            margin-top: 20px;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #3498db;
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -47,16 +63,37 @@
         <h1>Payment</h1>
       
         <form class="payment-form" id="paymentForm">
-    <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required></p>
-    <input type="text" id="cardName" name="cardName" placeholder="Cardholder Name" required></p>
-    <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required></p>
-    <input type="text" id="cvv" name="cvv" placeholder="CVV" required></p>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required maxlength="19"><br>
+            <input type="text" id="cvv" name="cvv" placeholder="CVV" required maxlength="3"><br>
+            <input type="text" id="expirationDate" name="expirationDate" placeholder="Expiration Date (MM/YYYY)" required maxlength="7"><br>            
+            <input type="email" id="email" name="email" placeholder="Email Address" required readonly style="display: none;"><br>
             <button type="submit">Confirm Payment</button>
+            <div class="loading"></div> <!-- Loading spinner -->
         </form>
     </div>
 
     <script>
-        
+        document.addEventListener('DOMContentLoaded', function() {
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+            // Fetch user's email address using the provided method
+            fetch(`/getEmailByUserID/${userID}`)
+                .then(response => response.json())
+                .then(data => {
+                    const userEmail = data.email;
+                    document.getElementById('email').value = userEmail; // Fill email input
+                    console.log("User's email:", userEmail); // Display user's email
+                })
+                .catch(error => {
+                    console.error('Failed to fetch user email:', error);
+                    alert('Failed to fetch user email. Please try again later.');
+                });
+        });
+
         document.getElementById('paymentForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const userID = localStorage.getItem('UserID');
@@ -65,24 +102,31 @@
                 return;
             }
 
-           
             const selectedVehicles = JSON.parse(localStorage.getItem(userID));
             if (!selectedVehicles || selectedVehicles.length === 0) {
                 alert('No vehicles selected for reservation.');
                 return;
             }
 
-         
-            selectedVehicles.forEach(vehicle => {
+            const userEmail = document.getElementById('email').value;
+
+            const allReservations = [];
+
+            const loading = document.querySelector('.loading');
+            loading.style.display = 'block';
+
+            Promise.all(selectedVehicles.map(vehicle => {
                 const reservationData = {
                     vehicleId: vehicle.vehicleID,
                     userId: userID,
                     startTime: vehicle.startTime,
-                    endTime: vehicle.endTime
+                    endTime: vehicle.endTime,
+                    email: userEmail 
                 };
 
-               
-                fetch('/create_reservation', {
+                allReservations.push(reservationData); 
+
+                return fetch('/confirmed_reservation', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -93,18 +137,21 @@
                     if (!response.ok) {
                         throw new Error('Failed to create reservation.');
                     }
-                    
-                    localStorage.removeItem(userID); 
-                    
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('Failed to create reservation. Please try again later.');
                 });
+            }))
+            .then(() => {
+                localStorage.setItem('allReservations', JSON.stringify(allReservations));
+                
+                window.location.href = 'ConfirmationDetails.html';
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to create reservation. Please try again later.');
+            })
+            .finally(() => {
+                loading.style.display = 'none';
             });
-
         });
-            
     </script>
 </body>
 </html>

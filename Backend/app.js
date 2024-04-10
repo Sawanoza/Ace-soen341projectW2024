@@ -3,9 +3,8 @@ const cors = require("cors");
 const path = require("path");
 const db = require("../Database/db.js");
 const app = express();
-
-//const nodemailer = require("nodemailer");
-//const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
+const bodyParser = require("body-parser");
 
 app.use(cors());
 app.use(express.json());
@@ -13,7 +12,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 
 
-//app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 //testing
 const http = require('http');
@@ -32,7 +31,6 @@ app.get("/users", (req, res) => {
       console.log(err);
       return res.json(err);
     }
-
     return res.json(data);
   });
 });
@@ -160,6 +158,99 @@ app.get("/check_out", (req, res) => {
   res.sendFile(path.join(__dirname, "public/check_out.html"));
 });
 
+app.get("/getEmailByUserID/:userID", function (req, res) {
+  const userID = req.params.userID; // Get the userID from the route parameter
+  
+  // Query to fetch the Email based on the provided UserID
+  const getEmailQuery = "SELECT Email FROM Users WHERE UserID = ?";
+  
+  // Execute the query
+  db.query(getEmailQuery, [userID], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    // Check if a user with the provided UserID exists
+    if (result.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Retrieve and send the Email in the response
+    const email = result[0].Email;
+    res.status(200).json({ email });
+  });
+});
+
+app.get("/getUserIdByEmail/:email", function (req, res) {
+  const email = req.params.email; // Get the email from the route parameter
+  
+  // Query to fetch the UserID based on the provided email
+  const getUserIdQuery = "SELECT UserID FROM Users WHERE Email = ?";
+  
+  // Execute the query
+  db.query(getUserIdQuery, [email], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    // Check if a user with the provided email exists
+    if (result.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Retrieve and send the UserID in the response
+    const userId = result[0].UserID;
+    res.status(200).json({ userId });
+  });
+});
+
+app.post("/create_usertemp", function (req, res) { 
+  // Query to fetch the maximum user ID
+  const maxUserIdQuery = "SELECT MAX(UserID) AS maxUserId FROM Users";
+  
+  // Execute the query to get the maximum user ID
+  db.query(maxUserIdQuery, (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+    // Determine the new user ID
+    const latestUserId = result[0].maxUserId || 0;
+    const newUserId = latestUserId + 1;
+
+    // Insert new user with the generated user ID
+    const insertQuery =
+      "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, password, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  
+    const values = [
+      newUserId,
+      req.body.firstName,
+      req.body.lastName,
+      req.body.contactNo,
+      req.body.email,
+      req.body.password,
+      req.body.address,
+      req.body.isCust,
+      req.body.isAdmin,
+      req.body.isRep,
+    ];
+  
+    // Execute the insert query
+    db.query(insertQuery, values, (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send(err);
+      }
+
+    });
+  });
+});
+
+
+// The following get methods are used for admins
+
 app.get("/create_vehicles", (req, res) => {
   res.sendFile(path.join(__dirname, "public/create_vehicles.html"));
 });
@@ -183,7 +274,6 @@ app.get("/read_users", (req, res) => {
 app.get("/rent_log", (req, res) => {
   res.sendFile(path.join(__dirname, "public/rental_log.html"));
 });
-
 
 app.get("/rental_logs", (req, res) => {
   const q = "SELECT * FROM RentalLog";
@@ -233,44 +323,7 @@ app.post("/create_user", function (req, res) {
   });
 });
 
-app.post("/create_usertemp", function (req, res) { //Delete it once the official sign up page is done
-  console.log([
-    req.body.userId,
-    req.body.firstName,
-    req.body.lastName,
-    req.body.contactNo,
-    req.body.email,
-    req.body.password,
-    req.body.address,
-    req.body.isCust,
-    req.body.isAdmin,
-    req.body.isRep,
-  ]);
 
-  const q =
-    "INSERT INTO Users (UserID, FirstName, LastName, ContactNo, Email, password, Address, IsCust, IsAdmin, IsRep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-  const values = [
-    req.body.userId,
-    req.body.firstName,
-    req.body.lastName,
-    req.body.contactNo,
-    req.body.email,
-    req.body.password,
-    req.body.address,
-    req.body.isCust,
-    req.body.isAdmin,
-    req.body.isRep,
-  ];
-
-  db.query(q, values, (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.send(err);
-    }
-    res.redirect("/Map.html");
-  });
-});
 
 app.post("/item", function (req, res) {
   console.log([
@@ -323,7 +376,7 @@ app.post("/item", function (req, res) {
 // ___________ ADDING DELETE  ___________
 
 //Delete vehicles
-function deleteVehicleById(id, callback) {
+  function deleteVehicleById(id, callback) {
   const deleteBranchVehiclesQuery = `DELETE FROM BranchVehicles WHERE VehicleID = ?`;
   const deleteVehicleQuery = `DELETE FROM Vehicles WHERE VehicleID = ?`;
 
@@ -450,7 +503,6 @@ app.delete("/HasReserved/:UserID/:VehicleID", (req, res) => {
     }
   });
 });
-
 
 // ___________  END OF DELETE ___________
 
@@ -897,7 +949,6 @@ app.get("/fetch/:VehicleID/:UserID", (req, res) => {
 app.post("/checkout", (req, res) => {
   const { userId, vehicleId, returnDate, cost } = req.body;
 
-  // Perform insertion into RentalLog table
   const insertQuery =
     "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate,RentCost) VALUES (?, ?, ?,?)";
   db.query(
@@ -934,7 +985,6 @@ app.get("/checkout/:vehicleId", (req, res) => {
         .json({ error: "Vehicle not found or not reserved" });
     }
 
-    // Assuming you have the startTime and returnDate fetched from the database
     const startTime = new Date(data[0].StartTime);
     const endDate = new Date(returnDate);
     const differenceInMilliseconds = endDate - startTime;
@@ -943,7 +993,6 @@ app.get("/checkout/:vehicleId", (req, res) => {
       (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
 
-    // Respond with the calculated values
     res.json({
       startTime: startTime,
       returnDate: returnDate,
@@ -954,3 +1003,223 @@ app.get("/checkout/:vehicleId", (req, res) => {
 });
 
 //____________ END OF CHECKOUT ___________
+
+app.post('/check_out', (req, res) => {
+  console.log("Connected");
+  const userId = req.body.userId;
+  const vehicleId = req.body.vehicleId;
+  const isDamaged = req.body.isDamaged; 
+  const damageDetails = req.body.damageDetails;
+  const isStolen = req.body.isStolen;
+  const email= req.body.email;
+  
+  const LATE_FEE_PER_HOUR = 25; 
+  const DAMAGE_FEE = 100; 
+
+  
+  db.query('SELECT * FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, reservations) => {
+    if (error) {
+      console.error('Database error:', error);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    if (reservations.length === 0) {
+      res.status(404).send('Reservation not found');
+      return;
+    }
+
+    const reservation = reservations[0];
+
+    
+    db.query('DELETE FROM HasReserved WHERE UserID = ? AND VehicleID = ?', [userId, vehicleId], (error, result) => {
+      if (error) {
+        console.error('Error deleting reservation:', error);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      
+      let totalExtraCharges = 0;
+      const currentTime = new Date();
+      const reservationEndTime = new Date(reservation.EndTime);
+
+      if (currentTime > reservationEndTime) {
+        const hoursLate = Math.ceil((currentTime - reservationEndTime) / (1000 * 60 * 60));
+        totalExtraCharges += hoursLate * LATE_FEE_PER_HOUR;
+      }
+
+      if (isDamaged) {
+        totalExtraCharges += DAMAGE_FEE;
+      }
+     
+
+      res.json({ success: true, message: 'Reservation checked out successfully!', extraCharges: totalExtraCharges });
+
+  const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  auth: {
+    user: 'mustafa.abulh4@gmail.com',
+    pass: 'xsrs ajej lsae makx'
+    ,
+  },
+});
+const mailOptions = {
+  from: 'mustafa.abulh4@gmail.com', 
+  to: email, 
+  subject: 'Checkout Confirmation', 
+  text: `Hello,
+
+Your checkout has been processed successfully.
+
+Details:
+- User ID: ${userId}
+- Vehicle ID: ${vehicleId}
+- Extra Charges: $${totalExtraCharges}
+${isDamaged ? `- Damage Details: ${damageDetails}` : '- Damage Details: Perfect Condition'}
+${isStolen ? '\n- Note: Vehicle reported stolen.' : ''}
+
+Thank you for using our service.
+
+Best,
+Ace Team`
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Email could not be sent.' });
+  } else {
+    console.log('Email sent: ' + info.response);
+    res.json({ success: true, message: 'Reservation checked out successfully!', extraCharges: totalExtraCharges });
+  }
+});
+
+transporter.verify().then(console.log).catch(console.error);
+
+    });
+  });
+
+});
+app.post("/confirmed_reservation", function (req, res) {
+  console.log([
+    req.body.vehicleId,
+    req.body.userId,
+    req.body.startTime,
+    req.body.endTime,
+  ]);
+
+  const qInsert =
+    "INSERT INTO HasReserved (VehicleID, UserID, StartTime, EndTime) VALUES (?, ?, ?, ?)";
+  const valuesInsert = [
+    req.body.vehicleId,
+    req.body.userId,
+    req.body.startTime,
+    req.body.endTime,
+  ];
+
+  const qUpdate = "UPDATE Vehicles SET isAvailable = 0 WHERE VehicleID = ?";
+  const valuesUpdate = [req.body.vehicleId];
+
+  // Query to fetch the price of the vehicle
+  const qGetPrice = "SELECT Price FROM Vehicles WHERE VehicleID = ?";
+  const valuesGetPrice = [req.body.vehicleId];
+
+  db.query(qInsert, valuesInsert, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.send(err);
+    }
+
+    db.query(qUpdate, valuesUpdate, (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send(err);
+      }
+
+      console.log("Reservation created successfully. Vehicle availability updated.");
+
+      // Fetch the price of the vehicle from the database
+      db.query(qGetPrice, valuesGetPrice, (err, priceData) => {
+        if (err) {
+          console.error(err);
+          return res.send(err);
+        }
+
+        // Calculate total price and taxes based on fetched vehicle price
+        const vehiclePrice = priceData[0].Price; // Accessing the price from the query result
+        const { totalPrice, totalTaxAmount } = calculateTotalPrice(vehiclePrice);
+
+        // Insert into RentalLog table
+        const qRentalLog =
+          "INSERT INTO RentalLog (VehicleID, UserID, ReturnDate, RentCost) VALUES (?, ?, ?, ?)";
+        const valuesRentalLog = [
+          req.body.vehicleId,
+          req.body.userId,
+          req.body.endTime,
+          totalPrice,
+        ];
+
+        db.query(qRentalLog, valuesRentalLog, (err, data) => {
+          if (err) {
+            console.error("Error inserting into RentalLog:", err);
+            return res.status(500).send("Error inserting into RentalLog");
+          }
+
+          console.log("Inserted into RentalLog successfully.");
+
+          // Email sending logic
+          const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            auth: {
+              user: 'mustafa.abulh4@gmail.com',
+              pass: 'xsrs ajej lsae makx',
+            },
+          });
+
+          const mailOptions = {
+            from: 'mustafa.abulh4@gmail.com',
+            to: req.body.email,
+            subject: 'Reservation Confirmation',
+            text: `Hello,
+
+Your Reservation Details:
+
+- User ID: ${req.body.userId}
+- Vehicle ID: ${req.body.vehicleId}
+- Start Time: ${req.body.startTime}
+- End Time: ${req.body.endTime}
+- Total Price: $${totalPrice.toFixed(2)}
+- Taxes (GST + QST): $${totalTaxAmount.toFixed(2)}
+
+Thank you for using our service.
+
+Best regards,
+Ace Team`
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error('Email could not be sent:', error);
+              res.status(500).send('Email could not be sent');
+            } else {
+              console.log('Email sent:', info.response);
+              res.status(200).send('Reservation created successfully and email sent.');
+            }
+          });
+        });
+      });
+    });
+  });
+});
+
+function calculateTotalPrice(price) {
+  const GST = 0.05;
+  const QST = 0.09975;
+  const totalTax = GST + QST;
+  const totalPrice = price * (1 + totalTax);
+  const totalTaxAmount = totalPrice - price;
+  return { totalPrice, totalTaxAmount };
+}
