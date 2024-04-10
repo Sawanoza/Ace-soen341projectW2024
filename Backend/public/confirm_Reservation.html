@@ -231,10 +231,11 @@
                 }
 
                 selectedVehicles.push({
-                    vehicleID,
-                    startTime,
-                    endTime
+                vehicleID,
+                startTime: startTimeInput.value,
+                endTime: endTimeInput.value
                 });
+            
             });
 
             if (validationPassed) { // Only proceed to Payment.html if all validations passed
