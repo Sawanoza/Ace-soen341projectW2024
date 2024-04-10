@@ -35,8 +35,8 @@ const Footer = () => {
                     </FooterLinkItems>
                     <FooterLinkItems>
                         <FooterLinkTitle>Contact Us</FooterLinkTitle>
-                            <FooterLink to="/">Contact</FooterLink>
-                            <FooterLink to="/">Support</FooterLink>
+                            <FooterLink to="tel:+1234567890">Call Us</FooterLink>
+                            <FooterLink to="mailto:marc_a00@hotmail.com">Support</FooterLink>
                             <FooterLink to="//github.com/Sawanoza/Ace-soen341projectW2024" target="_blank">Github</FooterLink>
                             <FooterLink to="/">Sponsorships</FooterLink>
                     </FooterLinkItems>
