@@ -1,0 +1,113 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(
+        108deg,
+        rgba(1, 147, 86, 1) 0%,
+        rgba(10, 201, 122, 1) 100%
+    );
+    color: #333;
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+}
+#userInfo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+#selectedVehicles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.vehicle-item {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+.vehicle-details {
+    margin: 10px 0;
+}
+.vehicle-details strong {
+    font-weight: bold;
+}
+.delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+#totalPrice {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+}
+#taxes {
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10px;
+}
+.reservation-form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.reservation-form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.reservation-form button:hover {
+    background-color: #45a049;
+}
+
+
+
+/* nav */
+.navbar {
+    background: black;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-logo {
+    color: #fff;
+    justify-self: flex-start;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+body {
+    margin: 0;
+}
+
+* {
+    font-family: "Encode Sans Expanded", sans-serif;
+}

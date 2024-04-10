@@ -4,99 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Reservation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-        }
-        #userInfo {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        #selectedVehicles {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .vehicle-item {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        .vehicle-details {
-            margin: 10px 0;
-        }
-        .vehicle-details strong {
-            font-weight: bold;
-        }
-        .delete-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
-        #totalPrice {
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 30px;
-        }
-        #taxes {
-            font-size: 16px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .reservation-form {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .reservation-form button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .reservation-form button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="confirm_Reservation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Confirm Reservation</h1>
-        <div id="userInfo"></div>
-        <ul id="selectedVehicles"></ul>
-        <div id="totalPrice"></div>
-        <div id="taxes"></div>
-        <form class="reservation-form" id="reservationForm">
-            <button type="submit">Proceed to payment</button>
-            <p>
-            <button type="button" id="cancelButton">Cancel</button>
-        </form>
+
+<!-- nav -->
+<div class="navbar">
+    <a href="#" class="nav-logo" id="scrollToTop">Rent.</a>
+</div>
+
+<div class="wrapper">
+    <div class="main-content">
+        <div class="container">
+            <h1>Confirm Reservation</h1>
+            <div id="userInfo"></div>
+            <ul id="selectedVehicles"></ul>
+            <div id="totalPrice"></div>
+            <div id="taxes"></div>
+            <form class="reservation-form" id="reservationForm">
+                <button type="submit">Proceed to payment</button>
+                <p>
+                <button type="button" id="cancelButton">Cancel</button>
+            </form>
+        </div>
     </div>
 
     <script>
+        //smooth scrolling
+         document.addEventListener("DOMContentLoaded", function() {
+            const scrollToTopLink = document.getElementById('scrollToTop');
+
+            scrollToTopLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+                });
+            });
+        });
+
+        //price calculation
         function displayReservationDetails() {
             const userID = localStorage.getItem('UserID');
             if (userID) {

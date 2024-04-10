@@ -4,34 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental Agreement Form</title>
+    <link rel="stylesheet" href="agreement.css">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Rental Agreement</h1>
-    <p>Enter UserID and VehicleID</p>
-    <form id="userVehicleForm">
-        <label for="userId">UserID:</label>
-        <input type="text" id="userId" name="userId" required><br><br>
-        <label for="vehicleId">VehicleID:</label>
-        <input type="text" id="vehicleId" name="vehicleId" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    <div id="rentalAgreement"></div>
+
+    <!-- nav -->
+    <div class="navbar">
+        <a href="#" class="nav-logo" id="scrollToTop">Rent.</a>
+    </div>
+
+
+
+        <div class='FormWrap'>
+            <div class='FormContent'>
+                <form class="Form" id="userVehicleForm">
+                    <div class='FormH1'>Check In</div>
+                    <div>
+                        <label class="FormLabel" for="userId">UserID</label></br>
+                        <input class="FormInput" type="text" id="userId" name="userId" required>
+                    </div>
+                    <div>
+                        <label class="FormLabel" for="password">VehicleID</label></br>
+                        <input class="FormInput" type="text" id="vehicleId" name="vehicleId" required>
+                    </div>
+                    <button class="FormButton" type='submit'>Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="agreementWrap" id="agreementWrap">
+            <div class="agreementTextWrap">
+                <h1>Rental Agreement</h1>
+                <div id="rentalAgreement"></div>
+            </div>
+        </div>
+
+
+
     <script>
-        document.getElementById("userVehicleForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form submission
+        //smooth scrolling
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollToTopLink = document.getElementById('scrollToTop');
 
-            const userId = document.getElementById("userId").value;
-            const vehicleId = document.getElementById("vehicleId").value;
-
-            // Make a fetch request to fetch the rental agreement based on the provided userId and vehicleId
-            fetch(`/fetch/${vehicleId}/${userId}`)
-                .then(response => response.text())
-                .then(data => {
-                    // Display the rental agreement
-                    document.getElementById("rentalAgreement").innerHTML = data;
-                })
-                .catch(error => console.error("Error fetching rental agreement:", error));
+            scrollToTopLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
         });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+        // Hide the agreementWrap initially
+        document.getElementById("agreementWrap").style.display = "none";
+
+        document.getElementById("userVehicleForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const userId = document.getElementById("userId").value;
+        const vehicleId = document.getElementById("vehicleId").value;
+
+        // Make a fetch request to fetch the rental agreement based on the provided userId and vehicleId
+        fetch(`/fetch/${vehicleId}/${userId}`)
+            .then(response => response.text())
+            .then(data => {
+                // Display the rental agreement
+                document.getElementById("rentalAgreement").innerHTML = data;
+                // Show the agreementWrap
+                document.getElementById("agreementWrap").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching rental agreement:", error));
+    });
+});
     </script>
 </body>
 </html>
