@@ -11,6 +11,45 @@
     </style>
 </head>
 <body>
+
+
+
+    <div class="Container">
+        <div class="FormWrap">
+            <a class="Icon" href="http://localhost:3000/">Rent.</a>
+            <div class="FormContent">
+                <form class="Form" id="signupForm" action="/create_usertemp" method="POST">
+                    <div class="FormH1">Create an account</div>
+                    <div>
+                        <label for="firstName">First Name</label></br>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div>
+                        <label for="lastName">Last Name</label></br>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    <div>
+                        <label for="contactNo">Contact No</label></br>
+                        <input type="tel" id="contactNo" name="contactNo" required>
+                    </div>
+                    <div>
+                        <label for="email">Email</label></br>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div>
+                        <label for="password">Password</label></br>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div>
+                        <label for="address">Address</label></br>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <h1>User Signup</h1>
     <form id="signupForm" action="/create_usertemp" method="POST">
         <label for="firstName">First Name:</label><br>
@@ -40,6 +79,9 @@
         <button type="submit" id="signupButton">Sign Up</button>
         <button type="button" id="reserveNowButton">Reserve Now</button>
     </form>
+
+
+
     <script>
         document.getElementById('signupButton').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default form submission behavior
