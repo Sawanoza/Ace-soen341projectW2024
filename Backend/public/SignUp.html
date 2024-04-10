@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Signup</title>
+    <link rel="stylesheet" href="SignUp.css">
+    <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@400;700&display=swap" rel="stylesheet">
     <style>
         #reserveNowButton {
             display: none; /* Hide the button */
@@ -13,72 +15,54 @@
 <body>
 
 
-
     <div class="Container">
         <div class="FormWrap">
             <a class="Icon" href="http://localhost:3000/">Rent.</a>
             <div class="FormContent">
                 <form class="Form" id="signupForm" action="/create_usertemp" method="POST">
                     <div class="FormH1">Create an account</div>
-                    <div>
-                        <label for="firstName">First Name</label></br>
-                        <input type="text" id="firstName" name="firstName" required>
+                    <div class="FormRow">
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="firstName">First Name</label>
+                            <input class="FormInput" type="text" id="firstName" name="firstName" placeholder="First Name" required>
+                        </div>
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="lastName">Last Name</label>
+                            <input class="FormInput" type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+                        </div>
                     </div>
-                    <div>
-                        <label for="lastName">Last Name</label></br>
-                        <input type="text" id="lastName" name="lastName" required>
+                    <div class="FormRow">
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="contactNo">Contact No</label></br>
+                            <input class="FormInput" type="tel" id="contactNo" name="contactNo" placeholder="XXXXXXXXXX" required>
+                        </div>
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="email">Email</label></br>
+                            <input class="FormInput" type="email" id="email" name="email" placeholder="example@example.com" required>
+                        </div>
                     </div>
-                    <div>
-                        <label for="contactNo">Contact No</label></br>
-                        <input type="tel" id="contactNo" name="contactNo" required>
+                    <div class="FormRow">
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="password">Password</label></br>
+                            <input class="FormInput" type="password" id="password" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="FormInputWrapper">
+                            <label class="FormLabel" for="address">Address</label></br>
+                            <input class="FormInput" type="text" id="address" name="address" placeholder="Address" required>
+                        </div>
                     </div>
-                    <div>
-                        <label for="email">Email</label></br>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div>
-                        <label for="password">Password</label></br>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    <div>
-                        <label for="address">Address</label></br>
-                        <input type="text" id="address" name="address" required>
-                    </div>
+
+                    <!-- Hidden fields for user role -->
+                    <input type="hidden" id="isCust" name="isCust" value="1">
+                    <input type="hidden" id="isAdmin" name="isAdmin" value="0">
+                    <input type="hidden" id="isRep" name="isRep" value="0">
+                            
+                    <button class="FormButton" type="submit" id="signupButton">Sign Up</button>
+                    <button type="button" id="reserveNowButton">Reserve Now</button>
                 </form>
             </div>
         </div>
     </div>
-
-
-    <h1>User Signup</h1>
-    <form id="signupForm" action="/create_usertemp" method="POST">
-        <label for="firstName">First Name:</label><br>
-        <input type="text" id="firstName" name="firstName" required><br>
-        
-        <label for="lastName">Last Name:</label><br>
-        <input type="text" id="lastName" name="lastName" required><br>
-        
-        <label for="contactNo">Contact No:</label><br>
-        <input type="tel" id="contactNo" name="contactNo" required><br>
-        
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        
-        <label for="address">Address:</label><br>
-        <input type="text" id="address" name="address" required><br>
-        
-        <!-- Hidden fields for user role -->
-        <input type="hidden" id="isCust" name="isCust" value="1">
-        <input type="hidden" id="isAdmin" name="isAdmin" value="0">
-        <input type="hidden" id="isRep" name="isRep" value="0">
-        
-        <br><br>
-        <button type="submit" id="signupButton">Sign Up</button>
-        <button type="button" id="reserveNowButton">Reserve Now</button>
-    </form>
 
 
 
@@ -126,7 +110,7 @@
                     localStorage.setItem('UserID', data.userId);
     
                     // Redirect to Map.html after retrieving UserID
-                    window.location.href = 'Map.html';
+                    window.location.href = 'sign_in.html';
                 })
                 .catch(error => {
                     console.error('Error:', error);
