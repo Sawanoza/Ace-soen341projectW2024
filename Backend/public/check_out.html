@@ -1,184 +1,124 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>reservation Checkout</title>
+  <title>Reservation Checkout</title>
   <link rel="stylesheet" href="check_out.css">
   <link href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@400;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-  <!-- nav -->
+  <!-- Navigation -->
   <div class="navbar">
-    <a href="#" class="nav-logo" id="scrollToTop">Rent.</a>
-</div>
-
-
-
-
-
-<div class='Container'>
-  <div class='FormWrap'>
-      <div class='FormContent'>
-          <form class="Form" id="checkoutForm">
-              <div class='FormH1'>Check Out</div>
-              <div>
-                  <label class="FormLabel" for="userId">User ID</label></br>
-                  <input class="FormInput" type="number" id="userId" name="userId" required>
-              </div>
-              <div>
-                  <label class="FormLabel" for="vehicleId">Vehicle ID</label></br>
-                  <input class="FormInput" type="number" id="vehicleId" name="vehicleId" required>
-              </div>
-              <div>
-                <label class="FormLabel" for="email">Email</label></br>
-                <input class="FormInput" type="email" id="email" name="email" required>
-              </div>
-              <div>
-                <label class="FormLabel" for="isDamaged">Damaged?</label></br>
-                <input class="FormInput" type="checkbox" id="isDamaged" name="isDamaged">
-              </div>
-              <div>
-                <label class="FormLabel" for="damageDetails">Damage Details (Optional)</label></br>
-                <textarea id="damageDetails" name="damageDetails"></textarea>
-              </div>
-              <div>
-                <label class="FormLabel" for="isStolen">Stolen?</label></br>
-                <input class="FormInput" type="checkbox" id="isStolen" name="isStolen">
-              </div>
-              <fieldset>
-                <legend>Payment Details</legend>
-                <div>
-                  <label for="cardName">Name on Card:</label>
-                  <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
-                </div>
-                <div>
-                  <label for="cardNumber">Card Number:</label>
-                  <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" pattern="\d{4} \d{4} \d{4} \d{4}" required>
-                </div>
-                <div>
-                  <label for="cardExpiry">Expiry Date:</label>
-                  <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}" required>
-                </div>
-                <div>
-                  <label for="cardCVV">CVV:</label>
-                  <input type="text" id="cardCVV" name="cardCVV" placeholder="123" pattern="\d{3}" required>
-                </div>
-              </fieldset>
-              <button type="submit">Confirm Checkout</button>
-          </form>
-      </div>
+    <a href="#" class="nav-logo">Rent.</a>
   </div>
-</div>
 
-
-<div id="result"></div>
-
-
-
-
-  <!-- <header>
-    <h1>reservation Checkout</h1>
-  </header> -->
-
-  <main>
-    <!-- <form id="checkoutForm"> -->
-      <div>
-        <!-- <label for="userId">User ID:</label>
-        <input type="number" id="userId" name="userId" required> -->
+  <!-- Form Container -->
+  <div class='Container'>
+    <div class='FormWrap'>
+      <div class='FormContent'>
+        <form class="Form" id="checkoutForm">
+          <h1 class='FormH1'>Check Out</h1>
+          <!-- User Information Fields -->
+          <div>
+            <label class="FormLabel" for="userId">User ID</label>
+            <input class="FormInput" type="number" id="userId" name="userId" required>
+          </div>
+          <div>
+            <label class="FormLabel" for="vehicleId">Vehicle ID</label>
+            <input class="FormInput" type="number" id="vehicleId" name="vehicleId" required>
+          </div>
+          <div>
+            <label class="FormLabel" for="email">Email</label>
+            <input class="FormInput" type="email" id="email" name="email" required>
+          </div>
+          <!-- Additional Options -->
+          <div>
+            <label class="FormLabel" for="isDamaged">Damaged?</label>
+            <input class="FormInput" type="checkbox" id="isDamaged" name="isDamaged">
+          </div>
+          <div>
+            <label class="FormLabel" for="damageDetails">Damage Details (Optional)</label>
+            <textarea id="damageDetails" name="damageDetails"></textarea>
+          </div>
+          <div>
+            <label class="FormLabel" for="isStolen">Stolen?</label>
+            <input class="FormInput" type="checkbox" id="isStolen" name="isStolen">
+          </div>
+          <!-- Payment Details Section -->
+          <fieldset>
+            <legend>Payment Details</legend>
+            <br>
+            <div>
+              <label for="cardName">Name on Card:</label>
+              <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
+            </div>
+            <div>
+              <label for="cardNumber">Card Number:</label>
+              <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" pattern="\d{4} \d{4} \d{4} \d{4}" required>
+            </div>
+            <div>
+              <label for="cardExpiry">Expiry Date:</label>
+              <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}" required>
+            </div>
+            <div>
+              <label for="cardCVV">CVV:</label>
+              <input type="text" id="cardCVV" name="cardCVV" placeholder="123" pattern="\d{3}" required>
+            </div>
+          </fieldset>
+          <br>
+          <button type="submit" class="FormButton">Confirm Checkout</button>
+        </form>
       </div>
-      <div>
-        <!-- <label for="vehicleId">Vehicle ID:</label>
-        <input type="number" id="vehicleId" name="vehicleId" required> -->
-      </div>  
-      <div>
-        <!-- <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required> -->
-      </div>
-      <div>
-        <!-- <label for="isDamaged">Damaged:</label>
-        <input type="checkbox" id="isDamaged" name="isDamaged"> -->
-      </div>
-      <div>
-        <!-- <label for="damageDetails">Damage Details (Optional):</label>
-        <textarea id="damageDetails" name="damageDetails"></textarea> -->
-      </div>
-      <div>
-        <!-- <label for="isStolen">Stolen:</label>
-        <input type="checkbox" id="isStolen" name="isStolen"> -->
-      </div>
-      <!-- Payment Section -->
-      <!-- <fieldset>
-        <legend>Payment Details</legend>
-        <div>
-          <label for="cardName">Name on Card:</label>
-          <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
-        </div>
-        <div>
-          <label for="cardNumber">Card Number:</label>
-          <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" pattern="\d{4} \d{4} \d{4} \d{4}" required>
-        </div>
-        <div>
-          <label for="cardExpiry">Expiry Date:</label>
-          <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}" required>
-        </div>
-        <div>
-          <label for="cardCVV">CVV:</label>
-          <input type="text" id="cardCVV" name="cardCVV" placeholder="123" pattern="\d{3}" required>
-        </div>
-      </fieldset>
-      <button type="submit">Confirm Checkout</button> -->
-    </form>
-<!-- 
-    <div id="result"></div> </main> -->
+    </div>
+  </div>
 
+  <div id="result"></div>
 
-
-    <script>
-        const checkoutForm = document.getElementById('checkoutForm');
-        const resultDiv = document.getElementById('result');
+  <script>
+    const checkoutForm = document.getElementById('checkoutForm');
+    const resultDiv = document.getElementById('result');
+  
+    checkoutForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+  
       
-        checkoutForm.addEventListener('submit', (event) => {
-          event.preventDefault();
-      
-          // Create an object from the FormData
-          const formData = new FormData(checkoutForm);
-          const jsonData = {};
-          formData.forEach((value, key) => {
-            // For checkboxes, convert "on"/"off" to true/false
-            if(value === 'on') {
-              jsonData[key] = true;
-            } else if (value === '') {
-              jsonData[key] = false; // Assuming unchecked boxes are false
-            } else {
-              jsonData[key] = value;
-            }
-          });
-      
-          // Corrected 'Content-Type' header and body to use JSON
-          fetch("http://localhost:8800/check_out", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(jsonData)
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              resultDiv.textContent = `Checkout Successful! Extra Charges: $${data.extraCharges}`;
-            } else {
-              resultDiv.textContent = `Error: ${data.message}`;
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            resultDiv.textContent = 'Error during checkout. Please try again.';
-          });
-        });
-      </script>
-      
+      const formData = new FormData(checkoutForm);
+      const jsonData = {};
+      formData.forEach((value, key) => {
 
- </body>
+        if(value === 'on') {
+          jsonData[key] = true;
+        } else if (value === '') {
+          jsonData[key] = false; 
+        } else {
+          jsonData[key] = value;
+        }
+      });
+  
+      
+      fetch("http://localhost:8800/check_out", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(`Checkout Successful! Extra Charges: $${data.extraCharges}`);
+        } else {
+          alert(`Error: ${data.message}`);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error during checkout. Please try again.');
+      });
+    });
+  </script>
+
+</body>
 </html>
