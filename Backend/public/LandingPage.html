@@ -41,7 +41,28 @@
 
 
 
-<p>Put Vehicle Search here</p>
+
+
+
+
+
+
+
+<!-- Your search form and results ... -->
+<div id="vehicleGrid" class="vehicle-grid"></div> <!-- Updated this line -->
+    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -78,6 +99,58 @@
           });
       });
   });
+
+
+  // Your existing script...
+        
+  async function displayVehicleList() {
+    try {
+        const response = await fetch('http://localhost:8800/vehicles');
+        const vehicles = await response.json();
+        const vehicleGrid = document.getElementById('vehicleGrid'); // Ensure this ID is set in your HTML
+        let grid = document.createElement('div');
+        grid.className = 'vehicle-grid';
+
+        vehicles.forEach((vehicle, index) => {
+    const card = document.createElement('div');
+    card.className = 'vehicle-card';
+    let vehicleDetailsElement;
+    if (vehicle.IsAvailable) {
+        vehicleDetailsElement = `<a class="search-result-button" href="vehicle_details.html?id=${vehicle.VehicleID}">View Details</a>`;
+    } else {
+        vehicleDetailsElement = `<div class="search-result-button-not-available">Not Available</div>`; // Display as a non-clickable div instead
+    }
+    card.innerHTML = `
+        <div class="vehicle-image">
+            <img src="${vehicle.Images}" alt="${vehicle.Name}">
+        </div>
+        <div class="vehicle-info">
+            <div class="vehicle-name">${vehicle.Name} (${vehicle.Brand})</div>
+            <div class="vehicle-price">Price-per-Hour: $${vehicle.Price}</div>
+            ${vehicleDetailsElement}
+        </div>
+    `;
+    grid.appendChild(card);
+    
+    // When you hit a multiple of 3, append the current grid and start a new one.
+    if ((index + 1) % 3 === 0) {
+        vehicleGrid.appendChild(grid);
+        grid = document.createElement('div');
+        grid.className = 'vehicle-grid';
+    }
+});
+
+// After the loop, append any remaining vehicles if they don't fill up the last row.
+if (vehicles.length % 3 !== 0) {
+    vehicleGrid.appendChild(grid);
+}
+} catch (error) {
+        console.error('Error fetching vehicle list:', error);
+    }
+}
+
+displayVehicleList();
+
 </script>
 
 </html>
