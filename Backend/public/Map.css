@@ -1,0 +1,78 @@
+* {
+    font-family: "Encode Sans Expanded", sans-serif;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(
+        108deg,
+        rgba(1, 147, 86, 1) 0%,
+        rgba(10, 201, 122, 1) 100%
+    );
+}
+
+.container {
+    background-color: black;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+/* nav */
+.navbar {
+    background: black;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-logo {
+    color: #fff;
+    justify-self: flex-start;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(
+        108deg,
+        rgba(1, 147, 86, 1) 0%,
+        rgba(10, 201, 122, 1) 100%
+    );
+}
+
+/* Branch links */
+#searchResults ul,
+#branchList ul {
+    list-style: none;
+    padding: 0;
+}
+
+#searchResults li,
+#branchList li {
+    margin-bottom: 10px;
+}
+
+#searchResults a,
+#branchList a {
+    color: white; 
+    text-decoration: none; 
+}
+
+#searchResults a:hover,
+#branchList a:hover {
+    color: #ccc; 
+}
