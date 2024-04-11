@@ -109,6 +109,7 @@
       .then(data => {
         if (data.success) {
           alert(`Checkout Successful! Extra Charges: $${data.extraCharges}`);
+          window.location.href = 'http://localhost:8800/landingpage.html';
         } else {
           alert(`Error: ${data.message}`);
         }
