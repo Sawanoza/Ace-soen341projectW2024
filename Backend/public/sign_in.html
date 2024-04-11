@@ -36,57 +36,55 @@
 
     <script>
         document.getElementById('signInForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-    
-            // Get the email input value
-            const emailOrEmployeeNumber = document.getElementById('email').value;
-    
-            // Check if input is a valid email
-            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrEmployeeNumber);
-    
-            // Check if input consists only of numbers
-            const isNumeric = /^\d+$/.test(emailOrEmployeeNumber);
-    
-            // Prepare form data
-            const formData = new FormData(this);
-    
-            // Fetch sign-in request
-            fetch('/signin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: formData.get('email'),
-                    password: formData.get('password')
-                })
+        event.preventDefault(); 
+
+        // Get the email input value
+        const emailOrEmployeeNumber = document.getElementById('email').value;
+
+        // Check if input is a valid email
+        const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrEmployeeNumber);
+
+        // Prepare form data
+        const formData = new FormData(this);
+
+        // Fetch sign-in request
+        fetch('/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: formData.get('email'),
+                password: formData.get('password')
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Sign-in failed.');
-                }
-               
-                return response.json();
-            })
-            .then(data => {
-                // Set user ID in local storage
-                localStorage.setItem('UserID', data.userId);
-                
-                if (isEmail) {
-                    window.location.href = '/LandingPage.html'; 
-                } else if (isNumeric) {
-                    window.location.href = '/CustomerService.html'; 
-                } else {
-                    document.getElementById('errorMessage').textContent = 'Invalid email or password. Please try again.';
-                    document.getElementById('errorMessage').style.display = 'block';
-                }
-            })
-            .catch(error => {
-                console.error(error);
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Sign-in failed.');
+            }
+           
+            return response.json();
+        })
+        .then(data => {
+            // Set user ID in local storage
+            localStorage.setItem('UserID', data.userId);
+            
+            // Check if the email is admin email
+            if (formData.get('email') === "admin@admin.com") {
+                window.location.href = '/AdminPage.html'; 
+            } else if (isEmail) {
+                window.location.href = '/LandingPage.html'; 
+            } else {
                 document.getElementById('errorMessage').textContent = 'Invalid email or password. Please try again.';
                 document.getElementById('errorMessage').style.display = 'block';
-            });
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById('errorMessage').textContent = 'Invalid email or password. Please try again.';
+            document.getElementById('errorMessage').style.display = 'block';
         });
+    });
     </script>
     
 </body>

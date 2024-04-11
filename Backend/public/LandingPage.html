@@ -16,19 +16,13 @@
     <div class="navbar-container">
         <ul class="nav-menu">
             <li class="nav-item">
-            <a href="/map.html" class="nav-link">Browse Vehicles (temporary)</a>
+            <a href="/map.html" class="nav-link">Select Branch</a>
             </li>
             <li class="nav-item">
                 <a href="/agreement.html" class="nav-link">Check In</a>
             </li>
             <li class="nav-item">
                 <a href="/check_out.html" class="nav-link">Check Out</a>
-            </li>
-            <li class="nav-item">
-                <a href="/rental_log.html" class="nav-link">Rental Log</a>
-            </li>
-            <li class="nav-item">
-                <a href="AdminPage.html" class="nav-link">Administrators</a>
             </li>
         </ul>
     </div>
@@ -41,28 +35,10 @@
 
 
 
-
-
-
-
-
-
-
+<h2 style="text-align: center;">Vehicle Search</h2>
 <!-- Your search form and results ... -->
 <div id="vehicleGrid" class="vehicle-grid"></div> <!-- Updated this line -->
     
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -101,8 +77,8 @@
   });
 
 
-  // Your existing script...
-        
+  
+  //grid
   async function displayVehicleList() {
     try {
         const response = await fetch('http://localhost:8800/vehicles');
