@@ -1,69 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentalLog List</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RentalLog List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .chart-container {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .data-analytics {
+      margin-bottom: 20px;
+    }
+    .graph-info {
+      margin-bottom: 20px;
+    }
+    .graph-info h3 {
+      margin-bottom: 10px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h2>RentalLog List</h2>
+  <div class="container">
+    <h2>Rental Log</h2>
     <table id="rentalLogTable">
-        <thead>
-            <tr>
-                <th>SNo</th>
-                <th>VehicleID</th>
-                <th>UserID</th>
-                <th>Start Date</th>
-                <th>Return Date</th>
-                <th>Rent Cost</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- RentalLog data will be inserted here -->
-        </tbody>
+      <thead>
+        <tr>
+          <th>SNo</th>
+          <th>VehicleID</th>
+          <th>UserID</th>
+          <th>Start Date</th>
+          <th>Return Date</th>
+          <th>Rent Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- RentalLog data will be inserted here -->
+      </tbody>
     </table>
-    <script>
-        // Fetch RentalLog data and populate the table
-        window.onload = function () {
-            fetch("/rental_logs")
-                .then((response) => response.json())
-                .then((data) => {
-                    const tableBody = document.querySelector("#rentalLogTable tbody");
-                    data.forEach((log) => {
-                        const row = document.createElement("tr");
-                        // Format start date if it's a Date object
-                        const startDate = log.StartDate instanceof Date ? log.StartDate.toLocaleDateString() : log.StartDate;
-                        // Format return date if it's a Date object
-                        const returnDate = log.ReturnDate instanceof Date ? log.ReturnDate.toLocaleDateString() : log.ReturnDate;
-                        row.innerHTML = `
-                            <td>${log.SNo}</td>
-                            <td>${log.VehicleID}</td>
-                            <td>${log.UserID}</td>
-                            <td>${startDate}</td>
-                            <td>${returnDate}</td>
-                            <td>${log.RentCost}</td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch((error) =>
-                    console.error("Error fetching RentalLog data:", error)
-                );
-        };
-    </script>
+    <div class="data-analytics">
+      <h2>Data Analytics</h2>
+      <div class="graph-info">
+        <h3>Reservation Time Chart</h3>
+        <p>This chart shows the reservation time (in days) for each rental.</p>
+      </div>
+      <div class="chart-container">
+        <canvas id="reservationTimeChart"></canvas>
+      </div>
+      <div class="graph-info">
+        <h3>Daily Income Chart</h3>
+        <p>This chart displays the yearly income from rental services.</p>
+      </div>
+      <div class="chart-container">
+        <canvas id="dailyIncomeChart"></canvas>
+      </div>
+      <div class="graph-info">
+        <h3>Vehicles Borrowed Pie Chart</h3>
+        <p>This pie chart illustrates the distribution of vehicles borrowed.</p>
+      </div>
+      <div class="chart-container">
+        <canvas id="vehicleBorrowedChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.onload = function () {
+      fetch("/rental_logs")
+        .then((response) => response.json())
+        .then((data) => {
+          const tableBody = document.querySelector("#rentalLogTable tbody");
+          data.forEach((log, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${log.VehicleID}</td>
+                        <td>${log.UserID}</td>
+                        <td>${log.StartDate}</td>
+                        <td>${log.ReturnDate}</td>
+                        <td>${log.RentCost}</td>
+                    `;
+            tableBody.appendChild(row);
+          });
+
+          createGraphs(data);
+        })
+        .catch((error) =>
+          console.error("Error fetching RentalLog data:", error)
+        );
+    };
+
+    function createGraphs(data) {
+      // Reservation Time Chart
+      const vehicleRentalDays = {}; // Initialize object to store rental days per vehicle
+      data.forEach(log => {
+        const startDate = new Date(log.StartDate);
+        const returnDate = new Date(log.ReturnDate);
+        const rentalDays = (returnDate - startDate) / (1000 * 60 * 60 * 24); // Calculate rental days
+        const vehicleID = log.VehicleID;
+        vehicleRentalDays[vehicleID] = (vehicleRentalDays[vehicleID] || 0) + rentalDays; // Accumulate rental days
+      });
+
+      const reservationTimes = data.map((log) => {
+        const startDate = new Date(log.StartDate);
+        const returnDate = new Date(log.ReturnDate);
+        return (returnDate - startDate) / (1000 * 60 * 60 * 24); // Convert to days
+      });
+
+      new Chart(document.getElementById("reservationTimeChart"), {
+        type: "bar",
+        data: {
+          labels: data.map((log, index) => `SNo ${index + 1}`),
+          datasets: [
+            {
+              label: "Reservation Time (Days)",
+              data: reservationTimes,
+              backgroundColor: "rgba(54, 162, 235, 0.2)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      // Daily Income Chart
+      // Simplified to sum total prices of rented vehicles and shown over the years
+      const yearlyIncome = {};
+      data.forEach((log) => {
+        const year = new Date(log.StartDate).getFullYear();
+        yearlyIncome[year] = (yearlyIncome[year] || 0) + log.RentCost;
+      });
+      const years = Object.keys(yearlyIncome).sort();
+      const incomes = years.map((year) => yearlyIncome[year]);
+
+      new Chart(document.getElementById("dailyIncomeChart"), {
+        type: "line",
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: "Yearly Income",
+              data: incomes,
+              backgroundColor: "rgba(255, 99, 132, 0.2)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 2,
+              fill: false,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                // Include a dollar sign in the ticks
+                callback: function (value, index, ticks) {
+                  return "$" + value;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Pie Chart for Vehicles Borrowed
+      const vehicleLabels = Object.keys(vehicleRentalDays);
+      const rentalDaysData = vehicleLabels.map(id => vehicleRentalDays[id]);
+
+      new Chart(document.getElementById('vehicleBorrowedChart'), {
+        type: 'pie',
+        data: {
+          labels: vehicleLabels,
+          datasets: [{
+            label: 'Vehicles Borrowed',
+            data: rentalDaysData,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+              // Add more colors as needed
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)'
+              // Add more colors as needed
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    }
+  </script>
 </body>
 </html>
