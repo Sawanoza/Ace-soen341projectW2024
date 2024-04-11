@@ -941,7 +941,7 @@ app.get("/fetch/:VehicleID/:UserID", (req, res) => {
         This Agreement constitutes the entire understanding between the parties concerning the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral.<br>
         <strong>8. Signatures:</strong><br>
         The parties hereto have executed this Agreement as of the date first written above.<br>`;
-        rentalAgreement += `<form action="/submitForm" method="POST">
+        rentalAgreement += `<form action="http://localhost:8800/LandingPage.html">
         <h3>Renter:</h3>
         <label for="renter_signature">Signature:</label><br>
         <input type="text" id="renter_signature" name="renter_signature" required><br>
