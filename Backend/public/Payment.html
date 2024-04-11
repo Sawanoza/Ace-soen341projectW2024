@@ -44,6 +44,27 @@
             });
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const userID = localStorage.getItem('UserID');
+            if (!userID) {
+                alert('User ID not found.');
+                return;
+            }
+
+            // Fetch user's email address using the provided method
+            fetch(`/getEmailByUserID/${userID}`)
+                .then(response => response.json())
+                .then(data => {
+                    const userEmail = data.email;
+                    document.getElementById('email').value = userEmail; // Fill email input
+                    console.log("User's email:", userEmail); // Display user's email
+                })
+                .catch(error => {
+                    console.error('Failed to fetch user email:', error);
+                    alert('Failed to fetch user email. Please try again later.');
+                });
+        });
+
         //payment
         document.getElementById('paymentForm').addEventListener('submit', function(event) {
         event.preventDefault();

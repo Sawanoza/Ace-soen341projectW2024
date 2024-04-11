@@ -27,6 +27,7 @@
                 <p>
                 <button type="button" id="cancelButton">Cancel</button>
             </form>
+            <p class="error-message" id="errorMessage"></p>
         </div>
     </div>
 
@@ -130,6 +131,7 @@
         displayReservationDetails();
 
         const reservationForm = document.getElementById('reservationForm');
+        const errorMessageContainer = document.getElementById('errorMessage');
         reservationForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const userID = localStorage.getItem('UserID');
@@ -140,19 +142,50 @@
 
             const selectedVehicles = [];
             const vehicleItems = document.querySelectorAll('.vehicle-item');
+            let validationPassed = true;
+            let errorMessage = "";
+            
             vehicleItems.forEach(item => {
                 const vehicleID = item.getAttribute('data-vehicle-id');
-                const startTime = document.getElementById(`${vehicleID}-startTime`).value;
-                const endTime = document.getElementById(`${vehicleID}-endTime`).value;
+                const startTimeInput = document.getElementById(`${vehicleID}-startTime`);
+                const endTimeInput = document.getElementById(`${vehicleID}-endTime`);
+                const startTime = new Date(startTimeInput.value);
+                const endTime = new Date(endTimeInput.value);
+
+                // Validation
+                if (startTimeInput.value === "" || endTimeInput.value === "") {
+                    errorMessage = "Please fill in the dates.";
+                    validationPassed = false;
+                } else if (startTime < new Date()) {
+                    errorMessage = "Invalid Start Time.";
+                    validationPassed = false;
+                } else if (endTime <= startTime) {
+                    errorMessage = "Invalid End Time.";
+                    validationPassed = false;
+                } else if (endTime.getFullYear() - startTime.getFullYear() > 5) {
+                    errorMessage = "You cannot rent a vehicle for more than 5 years.";
+                    validationPassed = false;
+                } 
+
+                if (!validationPassed) {
+                    // Set the error message and exit the loop
+                    errorMessageContainer.textContent = errorMessage;
+                    return;
+                }
+
                 selectedVehicles.push({
-                    vehicleID,
-                    startTime,
-                    endTime
+                vehicleID,
+                startTime: startTimeInput.value,
+                endTime: endTimeInput.value
                 });
+            
             });
 
-            localStorage.setItem(userID, JSON.stringify(selectedVehicles));
-            window.location.href = 'Payment.html';
+            if (validationPassed) { // Only proceed to Payment.html if all validations passed
+                errorMessageContainer.textContent = ""; // Clear error message if all inputs are valid
+                localStorage.setItem(userID, JSON.stringify(selectedVehicles));
+                window.location.href = 'Payment.html';
+            }
         });
     </script>
 </body>

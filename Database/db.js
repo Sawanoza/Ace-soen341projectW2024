@@ -49,6 +49,8 @@ function insertData() {
     "INSERT INTO Users (UserID, ProfileImg, FirstName, LastName, ContactNo, Email, Password, Address, IsCust, IsAdmin, IsRep) VALUES (1, NULL, 'John', 'Doe', 1234567890, 'john@example.com', 'password123', '123 Main St', true, NULL, NULL),(2, NULL, 'Jane', 'Smith', 234567890, 'jane@example.com', 'password456', '456 Elm St', true, NULL, NULL),(3, NULL, 'Michael', 'Johnson', 346789012, 'michael@example.com', 'password789', '789 Oak St', true, NULL, NULL),(4, NULL, 'Emily', 'Brown', 456890123, 'emily@example.com', 'passwordabc', '456 Pine St', true, NULL, NULL),(5, NULL, 'Daniel', 'Martinez', 567801234, 'daniel@example.com', 'passworddef', '789 Maple St', true, NULL, NULL),(6, NULL, 'Sarah', 'Taylor', 678912345, 'sarah@example.com', 'passwordghi', '123 Cedar St', true, NULL, NULL),(7, NULL, 'Christopher', 'Anderson', 789013456, 'chris@example.com', 'passwordjkl', '456 Birch St', true, NULL, NULL),(8, NULL, 'Jessica', 'Wilson', 890234567, 'jessica@example.com', 'passwordmno', '789 Walnut St', true, NULL, NULL);",
     "INSERT INTO Branch (location, open_hours) VALUES ('Dollard-des-Ormeaux', '9AM - 6PM'), ('Anjou', '8AM - 5PM'), ('Brossard', '10AM - 7PM'), ('Westmount', '8:30AM - 6:30PM');", 
     "INSERT INTO BranchVehicles (BranchID, VehicleID) VALUES (1, 1), (1,2), (1, 3), (2, 4), (2, 5), (2,6), (2,7), (3,8), (3,9), (3,10), (4,11), (4,12), (4,13), (4,14), (4,15);", // assignment of vehicles to branches
+    "INSERT INTO RentalLog  (SNo, VehicleID, UserID, StartDate, ReturnDate, RentCost) VALUES (1, 1, 2, '2024-12-22T22:22', '2025-05-05T05:55', 25);",
+    "INSERT INTO HasReserved  (VehicleID, UserID, StartTime, EndTime) VALUES (1, 2 ,'2024-12-22T22:22', '2025-05-05T05:55');"
   ];
 
   insert_values.forEach((query) => {
