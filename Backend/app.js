@@ -817,6 +817,8 @@ app.get("/getPrice/:VehicleID", (req, res) => {
   });
 });
 
+
+
 app.get("/fetch/:VehicleID/:UserID", (req, res) => {
   const vehicleId = req.params.VehicleID;
   const userId = req.params.UserID;
@@ -854,95 +856,156 @@ app.get("/fetch/:VehicleID/:UserID", (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    // Prepare the Rental Agreement text
-    let rentalAgreement = `This Rental Agreement ("Agreement") is entered into between Ace Agency, located at MTL, Rue De Car Rental, hereinafter referred to as the "Rental Company," and the individual or entity identified below, hereinafter referred to as the "Renter":<br><br>`;
+    let rentalAgreement;
 
-    // Loop through the fetched data
-    result.forEach((item) => {
-      // Calculate rental period
-      const startTime = new Date(item.RentalStartDate);
-      const returnDate = new Date(item.ReturnDate || item.RentalEndDate); // Use RentalEndDate if ReturnDate is null
-      const differenceInMilliseconds = returnDate - startTime;
-      const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
+    if (result.length === 0) {
+      // No matching reservation found, customize rentalAgreement to include error message
+      rentalAgreement = `
+        <p>No matching reservation found. Please check the provided VehicleID and UserID.</p>
+      `;
+    } else {
+      // Matching reservation found, construct rentalAgreement normally
+      rentalAgreement = `
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+          }
+          .rental-terms {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          .rental-terms h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+          }
+          .rental-terms p {
+            margin-bottom: 10px;
+          }
+        </style>
+        
+        This Rental Agreement ("Agreement") is entered into between Ace Agency, located at MTL, Rue De Car Rental, hereinafter referred to as the "Rental Company," and the individual or entity identified below, hereinafter referred to as the "Renter":<br><br>
+      `;
 
-      // Append Renter's Information
-      rentalAgreement += `<strong>1. Renter's Information:</strong><br>`;
-      rentalAgreement += `UserID: ${item.UserID}<br>`;
-      rentalAgreement += `Name: ${item.FirstName} ${item.LastName}<br>`;
-      rentalAgreement += `Address: ${item.Address}<br>`;
-      rentalAgreement += `Contact Number: ${item.ContactNo}<br>`;
-      rentalAgreement += `Email Address: ${item.Email}<br><br>`;
+      // Loop through the fetched data and append to rentalAgreement
+      result.forEach((item) => {
+        // Calculate rental period
+        const startTime = new Date(item.RentalStartDate);
+        const returnDate = new Date(item.ReturnDate || item.RentalEndDate); // Use RentalEndDate if ReturnDate is null
+        const differenceInMilliseconds = returnDate - startTime;
+        const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
 
-      // Append Vehicle Information
-      rentalAgreement += `<strong>2. Vehicle Information:</strong><br>`;
-      rentalAgreement += `Make: ${item.Make}<br>`;
-      rentalAgreement += `Model: ${item.Model}<br>`;
-      rentalAgreement += `Type: ${item.Type}<br>`;
-      rentalAgreement += `Vehicle Identification Number : ${item.VehicleID}<br><br>`;
+        // Append Renter's Information
+        rentalAgreement += `<div class="rental-terms"><strong>1. Renter's Information:</strong><br>`;
+        rentalAgreement += `UserID: ${item.UserID}<br>`;
+        rentalAgreement += `Name: ${item.FirstName} ${item.LastName}<br>`;
+        rentalAgreement += `Address: ${item.Address}<br>`;
+        rentalAgreement += `Contact Number: ${item.ContactNo}<br>`;
+        rentalAgreement += `Email Address: ${item.Email}<br><br>`;
 
-      // Append Rental Details
-      rentalAgreement += `<strong>3. Rental Details:</strong><br>`;
-      rentalAgreement += `Rental Start Date: ${item.RentalStartDate}<br>`;
-      rentalAgreement += `Rental End Date: ${
-        item.ReturnDate || item.RentalEndDate
-      }<br>`;
-      rentalAgreement += `Rental Period: ${days} days ${hours} hours<br>`;
-      rentalAgreement += `Rental Rate: ${item.Price}$/hr<br>`;
-      rentalAgreement += `<pre>
-      4. Rental Terms and Conditions:
-      The Renter acknowledges receiving the vehicle described above in good condition and agrees to return it to the Rental Company in the same condition, subject to normal wear and tear.
-      The Renter agrees to use the vehicle solely for personal or business purposes and not for any illegal activities.
-      The Renter agrees to pay the Rental Company the agreed-upon rental rate for the specified rental period. Additional charges may apply for exceeding the mileage limit, late returns, fuel refueling, or other damages.
-      The Renter agrees to bear all costs associated with traffic violations, tolls, and parking fines incurred during the rental period.
-      The Renter acknowledges that they are responsible for any loss or damage to the vehicle, including theft, vandalism, accidents, or negligence, and agrees to reimburse the Rental Company for all repair or replacement costs.
-      The Renter agrees to return the vehicle to the designated drop-off location at the agreed-upon date and time. Failure to do so may result in additional charges.
-      The Rental Company reserves the right to terminate this agreement and repossess the vehicle without prior notice if the Renter breaches any terms or conditions of this agreement.
-      The Renter acknowledges receiving and reviewing a copy of the vehicle's insurance coverage and agrees to comply with all insurance requirements during the rental period.
-      5. Indemnification:
+        // Append Vehicle Information
+        rentalAgreement += `<strong>2. Vehicle Information:</strong><br>`;
+        rentalAgreement += `Make: ${item.Make}<br>`;
+        rentalAgreement += `Model: ${item.Model}<br>`;
+        rentalAgreement += `Type: ${item.Type}<br>`;
+        rentalAgreement += `Vehicle Identification Number : ${item.VehicleID}<br><br>`;
+
+        // Append Rental Details
+        rentalAgreement += `<strong>3. Rental Details:</strong><br>`;
+        rentalAgreement += `Rental Start Date: ${item.RentalStartDate}<br>`;
+        rentalAgreement += `Rental End Date: ${item.ReturnDate || item.RentalEndDate}<br>`;
+        rentalAgreement += `Rental Period: ${days} days ${hours} hours<br>`;
+        rentalAgreement += `Rental Rate: ${item.Price}$/hr<br>`;
+        rentalAgreement += `<div class="rental-terms"><strong>4. Rental Terms and Conditions:</strong><br>
+        The Renter acknowledges receiving the vehicle described above in good condition and agrees to return it to the Rental Company in the same condition, subject to normal wear and tear.<br>
+        The Renter agrees to use the vehicle solely for personal or business purposes and not for any illegal activities.<br>
+        The Renter agrees to pay the Rental Company the agreed-upon rental rate for the specified rental period. Additional charges may apply for exceeding the mileage limit, late returns, fuel refueling, or other damages.<br>
+        The Renter agrees to bear all costs associated with traffic violations, tolls, and parking fines incurred during the rental period.<br>
+        The Renter acknowledges that they are responsible for any loss or damage to the vehicle, including theft, vandalism, accidents, or negligence, and agrees to reimburse the Rental Company for all repair or replacement costs.<br>
+        The Renter agrees to return the vehicle to the designated drop-off location at the agreed-upon date and time. Failure to do so may result in additional charges.<br>
+        The Rental Company reserves the right to terminate this agreement and repossess the vehicle without prior notice if the Renter breaches any terms or conditions of this agreement.<br>
+        The Renter acknowledges receiving and reviewing a copy of the vehicle's insurance coverage and agrees to comply with all insurance requirements during the rental period.<br>
+        <strong>5. Indemnification:</strong><br>
+        The Renter agrees to indemnify and hold harmless the Rental Company, its employees, agents, and affiliates from any claims, liabilities, damages, or expenses arising out of or related to the Renter's use of the vehicle.<br>
+        <strong>6. Governing Law:</strong><br>
+        This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes arising under or related to this Agreement shall be resolved exclusively by the courts of [Jurisdiction].<br>
+        <strong>7. Entire Agreement:</strong><br>
+        This Agreement constitutes the entire understanding between the parties concerning the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral.<br>
+        <strong>8. Signatures:</strong><br>
+        The parties hereto have executed this Agreement as of the date first written above.<br>`;
+        rentalAgreement += `<form action="/submitForm" method="POST">
+        <h3>Renter:</h3>
+        <label for="renter_signature">Signature:</label><br>
+        <input type="text" id="renter_signature" name="renter_signature" required><br>
+        <label for="renter_print_name">Print Name:</label><br>
+        <input type="text" id="renter_print_name" name="renter_print_name" required><br>
+        <label for="renter_date">Date:</label><br>
+        <input type="text" id="renter_date" name="renter_date" required><br><br>
       
-      The Renter agrees to indemnify and hold harmless the Rental Company, its employees, agents, and affiliates from any claims, liabilities, damages, or expenses arising out of or related to the Renter's use of the vehicle.
+        <h3>Rental Company:</h3>
+        <label for="company_signature">Signature:</label><br>
+        <input type="text" id="company_signature" name="company_signature" required><br>
+        <label for="company_print_name">Print Name:</label><br>
+        <input type="text" id="company_print_name" name="company_print_name" required><br>
+        <label for="company_date">Date:</label><br>
+        <input type="text" id="company_date" name="company_date" required><br><br>
       
-      6. Governing Law:
-      
-      This Agreement shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes arising under or related to this Agreement shall be resolved exclusively by the courts of [Jurisdiction].
-      
-      7. Entire Agreement:
-      
-      This Agreement constitutes the entire understanding between the parties concerning the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral.
-      
-      8. Signatures:
-      
-      The parties hereto have executed this Agreement as of the date first written above. </pre>`;
-      rentalAgreement += `<form action="/submitForm" method="POST">
-      <h3>Renter:</h3>
-      <label for="renter_signature">Signature:</label><br>
-      <input type="text" id="renter_signature" name="renter_signature" required><br>
-      <label for="renter_print_name">Print Name:</label><br>
-      <input type="text" id="renter_print_name" name="renter_print_name" required><br>
-      <label for="renter_date">Date:</label><br>
-      <input type="text" id="renter_date" name="renter_date" required><br><br>
-    
-      <h3>Rental Company:</h3>
-      <label for="company_signature">Signature:</label><br>
-      <input type="text" id="company_signature" name="company_signature" required><br>
-      <label for="company_print_name">Print Name:</label><br>
-      <input type="text" id="company_print_name" name="company_print_name" required><br>
-      <label for="company_date">Date:</label><br>
-      <input type="text" id="company_date" name="company_date" required><br><br>
-    
-      <input type="submit" value="Submit">
-    </form>
-    `;
-    });
+        <input type="submit" value="Submit">
+      </form>
+      `;
+      });
+
+    }
 
     // Send the Rental Agreement text as HTML response
     res.setHeader("Content-Type", "text/html");
     res.send(rentalAgreement);
   });
 });
+
+// Assuming you have your database connection established
+// and the createTables function defined
+
+function createTables() {
+  const create_tables = [
+    "CREATE DATABASE IF NOT EXISTS Car_Rental;",
+    "USE Car_Rental;",
+    "CREATE TABLE IF NOT EXISTS Users (UserID INTEGER(9) PRIMARY KEY, ProfileImg VARCHAR(255), FirstName VARCHAR(255), LastName VARCHAR(255), ContactNo INTEGER(10), Email VARCHAR(255), Password VARCHAR(255), Address VARCHAR(255), IsCust BOOLEAN, IsAdmin BOOLEAN, IsRep BOOLEAN);",
+    "CREATE TABLE IF NOT EXISTS Vehicles (VehicleID INTEGER(9) PRIMARY KEY, Brand VARCHAR(255), Price DECIMAL(12, 2), Name VARCHAR(255), Mileage INTEGER(3), Images VARCHAR(2560), Seats INTEGER(1), Type VARCHAR(255), IsAvailable BOOLEAN);",
+    "CREATE TABLE IF NOT EXISTS HasReserved (VehicleID INTEGER(9) PRIMARY KEY, UserID INTEGER(9), FOREIGN KEY (UserID) REFERENCES Users(UserID), StartTime DATETIME, EndTime DATETIME);",
+    "CREATE TABLE IF NOT EXISTS Branch (id INT AUTO_INCREMENT PRIMARY KEY, location VARCHAR(255), open_hours VARCHAR(255));",
+    "CREATE TABLE IF NOT EXISTS RentalLog (SNo INTEGER(9) NOT NULL AUTO_INCREMENT  PRIMARY KEY,VehicleID INTEGER(9) ,UserID INTEGER(9) , StartDate DATETIME, ReturnDate DATETIME , RentCost INTEGER(9));",
+    "CREATE TABLE IF NOT EXISTS BranchVehicles (BranchID INT, VehicleID INT, PRIMARY KEY (BranchID, VehicleID), FOREIGN KEY (BranchID) REFERENCES Branch(id), FOREIGN KEY (VehicleID) REFERENCES Vehicles(VehicleID), UNIQUE (VehicleID));", 
+  ];
+
+  create_tables.forEach((query) => {
+    db.query(query, (err, result) => {
+      if (err) {
+        console.error("Error creating table:", err);
+      } else {
+        console.log("Table created successfully:", result);
+      }
+    });
+  });
+}
+
+// Call the function to create tables when the server starts
+createTables();
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
 
 //________ START CHECKOUT__________
 
