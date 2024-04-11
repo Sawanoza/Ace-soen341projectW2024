@@ -40,75 +40,94 @@
         }
 
        
-        const vehicleID = getQueryParam('id');
+        // JavaScript code to display the vehicle details, including the image
 
+// JavaScript code to display the vehicle details, including the image
+
+// Get the vehicle ID from the query parameter
+const vehicleID = getQueryParam('id');
+
+// Fetch the vehicle details using the vehicle ID
+fetch(`/vehicles/${vehicleID}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Vehicle ID not found.');
+        }
+        return response.json();
+    })
+    .then(vehicle => {
+        // Get the vehicle details container element
+        const vehicleDetailsElement = document.getElementById('vehicleDetails');
         
-        fetch(`/vehicles/${vehicleID}`)
+        // Create an image element for displaying the vehicle image
+        const vehicleImageElement = document.createElement('img');
+        vehicleImageElement.src = vehicle.Images; // Assuming the vehicle.Images contains the URL of the image
+        vehicleImageElement.alt = 'Vehicle Image';
+        
+        // Set the fixed width and height for the image
+        vehicleImageElement.style.width = '300px'; // Set your desired width
+        vehicleImageElement.style.height = '200px'; // Set your desired height
+
+        // Append the image element to the vehicle details container
+        vehicleDetailsElement.appendChild(vehicleImageElement);
+        
+        // Create and append other vehicle details elements
+        vehicleDetailsElement.innerHTML += `
+            <p>Vehicle ID: ${vehicle.VehicleID}</p>
+            <p>Brand: ${vehicle.Brand}</p>
+            <p>Name: ${vehicle.Name}</p>
+            <p>Mileage: ${vehicle.Mileage}</p>
+            <p>Seats: ${vehicle.Seats}</p>
+            <p>Type: ${vehicle.Type}</p>
+            <h2>Branch:</h2>
+            <div id="branchInfo">Loading...</div>
+        `;
+
+        // Fetch and display branch information
+        fetch(`/vehicles/${vehicleID}/branch`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Vehicle ID not found.');
+                    throw new Error('Branch information not found.');
                 }
                 return response.json();
             })
-            .then(vehicle => {
+            .then(branchInfo => {
+                // Get the branch ID
+                const branchID = branchInfo.BranchID;
                 
-                const vehicleDetailsElement = document.getElementById('vehicleDetails');
-                vehicleDetailsElement.innerHTML = `
-                    <p>Vehicle ID: ${vehicle.VehicleID}</p>
-                    <p>Brand: ${vehicle.Brand}</p>
-                    <p>Name: ${vehicle.Name}</p>
-                    <p>Mileage: ${vehicle.Mileage}</p>
-                    <p>Seats: ${vehicle.Seats}</p>
-                    <p>Type: ${vehicle.Type}</p>
-                    <p>Is Available: ${vehicle.IsAvailable ? 'Yes' : 'No'}</p>
-                    <h2>Branch:</h2>
-                    <span id="branchInfo">Loading...</span>
-                `;
-                
-               
-                fetch(`/vehicles/${vehicleID}/branch`)
+                // Fetch branch details using the branch ID
+                fetch(`/branches/details/${branchID}`)
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Branch information not found.');
+                            throw new Error('Branch details not found.');
                         }
                         return response.json();
                     })
-                    .then(branchInfo => {
-                        // Get the branch ID
-                        const branchID = branchInfo.BranchID;
-                        
-                        
-                        fetch(`/branches/details/${branchID}`)
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Branch details not found.');
-                                }
-                                return response.json();
-                            })
-                            .then(branchDetails => {
-                                const branchInfoElement = document.getElementById('branchInfo');
-                                branchInfoElement.innerHTML = `
-                                    <ul>
-                                        <li>ID: ${branchDetails.id}</li>
-                                        <li>Location: ${branchDetails.location}</li>
-                                        <li>Open Hours: ${branchDetails.open_hours}</li>
-                                    </ul>
-                                `;
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                document.getElementById('branchInfo').textContent = 'Branch details not found.';
-                            });
+                    .then(branchDetails => {
+                        // Display branch details
+                        const branchInfoElement = document.getElementById('branchInfo');
+                        branchInfoElement.innerHTML = `
+                            <p>ID: ${branchDetails.id}</p>
+                            <p>Location: ${branchDetails.location}</p>
+                            <p>Open Hours: ${branchDetails.open_hours}</p>
+                        `;
                     })
                     .catch(error => {
                         console.error(error);
-                        document.getElementById('branchInfo').textContent = 'Branch information not found.';
+                        document.getElementById('branchInfo').textContent = 'Branch details not found.';
                     });
             })
             .catch(error => {
                 console.error(error);
-                document.getElementById('vehicleDetails').textContent = 'Vehicle ID not found.';
+                document.getElementById('branchInfo').textContent = 'Branch information not found.';
             });
+    })
+    .catch(error => {
+        console.error(error);
+        document.getElementById('vehicleDetails').textContent = 'Vehicle ID not found.';
+    });
+
+
     </script>
 </body>
 </html>

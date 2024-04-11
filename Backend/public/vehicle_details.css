@@ -62,3 +62,40 @@ body {
         rgba(10, 201, 122, 1) 100%
     );
 }
+
+* {
+    font-family: "Encode Sans Expanded", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(
+        108deg,
+        rgba(1, 147, 86, 1) 0%,
+        rgba(10, 201, 122, 1) 100%
+    );
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.details-container {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 600px; /* Adjust max-width as needed */
+}
+
+.details-container h1 {
+    margin-bottom: 20px;
+}
+
+
